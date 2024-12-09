@@ -1,0 +1,4 @@
+[[headers]]
+for = "https://3dlanding.netlify.app/shirt.js" # Puedes ajustar esta ruta según tus necesidades
+  [headers.values]
+  access-control-allow-origin = "*" # Permite todas las fuentes; ajusta según sea necesario
