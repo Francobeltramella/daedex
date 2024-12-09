@@ -180,7 +180,7 @@ document.addEventListener("mousemove", (event) => {
 // Cargar el modelo
 const loader = new GLTFLoader();
 loader.load(
-  "/robot_skull.glb",
+  "./robot_skull.glb",
   (gltf) => {
     model = gltf.scene;
     scene.add(model);
