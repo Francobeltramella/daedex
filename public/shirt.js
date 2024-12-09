@@ -7,7 +7,7 @@ import gsap from 'gsap';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({antialias: true});
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0x000000, 0); 
@@ -18,49 +18,52 @@ const light = new THREE.DirectionalLight(0xffffff, 9);
 light.position.set(55, 50, 30);
 scene.add(light);
 
-// Material metálico
+
+const haloGeometry = new THREE.TorusGeometry(1.8, 0.02, 508, 3000); 
+
+const haloShaderMaterial = new THREE.ShaderMaterial({
+  uniforms: {
+    color: { value: new THREE.Color(0xffa500) }, // Color base
+    intensity: { value: 0.5 }, // Intensidad del efecto Fresnel
+    emissive: { value: new THREE.Color(0xffa500) }, // Luz cálida adicional
+  },
+  vertexShader: `
+    varying vec3 vNormal;
+    varying vec3 vWorldPosition;
+    void main() {
+      vNormal = normalize(normalMatrix * normal);
+      vWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    uniform vec3 color;
+    uniform vec3 emissive;
+    uniform float intensity;
+    varying vec3 vNormal;
+    varying vec3 vWorldPosition;
+    void main() {
+      vec3 viewDir = normalize(cameraPosition - vWorldPosition);
+      float fresnel = pow(1.0 - dot(vNormal, viewDir), intensity);
+      fresnel = clamp(fresnel, 0.2, 1.0); // Limitar valores para suavizar bordes
+      gl_FragColor = vec4(color * fresnel + emissive, 1.0);
+    }
+  `,
+  transparent: false, 
+  side: THREE.DoubleSide, 
+});
+const halo = new THREE.Mesh(haloGeometry, haloShaderMaterial);
+halo.position.set(0, 0.1, 0); // Colocar encima del skull
+halo.rotation.x = Math.PI / -1; // Rotar en el eje X para alinear como un aro horizontal
+//scene.add(halo);
+
+
 const metalMaterial = new THREE.MeshStandardMaterial({
   color: 0xffffff, // Base blanca
   metalness: 1,
   roughness: 0.2,
 });
 
-// Cargar la fuente y crear texto
-const loaderfont = new FontLoader();
-loaderfont.load(
-  'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', // Fuente JSON
-  (font) => {
-    const texts = ["A DESIGN AND", "STRATEGY PARTNER","FOCUSED EXCLUSIVELY"]; // Texto en dos líneas
-    const lineHeight = 0.8; // Distancia entre las líneas
-    texts.forEach((line, index) => {
-      const textGeometry = new TextGeometry(line, {
-        font: font,
-        size: 0.4,
-        height: 0.3,
-        curveSegments: 15,
-        bevelEnabled: true,
-        bevelThickness: 0.03,
-        bevelSize: 0.02,
-        bevelSegments: 2,
-      });
-
-      // Centrar el texto
-      textGeometry.center();
-
-      // Crear malla y agregarla a la escena
-      const textMesh = new THREE.Mesh(textGeometry, metalMaterial);
-
-      // Posicionar la línea
-      textMesh.position.y = -index * lineHeight; // Ajusta la posición en el eje Y
-      //scene.add(textMesh);
-    });
-    
-  },
-  undefined,
-  (err) => {
-    console.error('Error al cargar la fuente:', err);
-  }
-);
 
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); 
@@ -82,6 +85,7 @@ let currentEyeX = 0,
   currentEyeY = 0; 
 
 let scrollActive
+
 scrollActive = false;
 
 
@@ -92,15 +96,15 @@ const cursorRingGeometry = new THREE.RingGeometry(0.02, 0.03, 24); // Aro más p
 const cursorRingMaterial = new THREE.MeshBasicMaterial({
   color: 0xffa500, // Color del aro (blanco)
   transparent: true,
-  opacity: 1, // Translucidez
+  opacity: 0.8, // Translucidez
   side: THREE.DoubleSide, // Renderizar ambas caras
 });
 const cursorRing = new THREE.Mesh(cursorRingGeometry, cursorRingMaterial);
-scene.add(cursorRing);
+//scene.add(cursorRing);
 
 // Luz naranja para acompañar al cursor
-const cursorLight = new THREE.PointLight(0xffa500, 3, 2); // Luz cálida con alcance limitado
-cursorLight.castShadow = false; // No proyecta sombras
+const cursorLight = new THREE.PointLight(0xffa500, 3, 5); // Luz cálida con alcance limitado
+cursorLight.castShadow = true; // No proyecta sombras
 scene.add(cursorLight);
 
 // Variables para el movimiento suave (delay)
@@ -117,7 +121,6 @@ document.addEventListener("mousemove", (event) => {
   const vector = new THREE.Vector3(mouseX, mouseY, 0.5);
   vector.unproject(camera);
 
-  // Dirección del rayo desde la cámara
   const dir = vector.sub(camera.position).normalize();
   const distance = 2; // Distancia fija del cursor al usuario
   targetPosition = camera.position.clone().add(dir.multiplyScalar(distance)); // Objetivo del cursor
@@ -127,10 +130,8 @@ document.addEventListener("mousemove", (event) => {
 function animateCursor() {
   requestAnimationFrame(animateCursor);
 
-  // Interpolar suavemente entre la posición actual y la objetivo
   currentPosition.lerp(targetPosition, 0.1); // El valor 0.1 ajusta la suavidad del retraso
 
-  // Actualizar posiciones del aro y la luz
   cursorRing.position.copy(currentPosition);
   cursorLight.position.copy(currentPosition);
 
@@ -142,29 +143,6 @@ function animateCursor() {
 
 animateCursor();
 
-
-// // Textura de niebla
-// const fogTexture = new THREE.TextureLoader().load("http://localhost:5173/src/shaders/bg1.jpg");
-// const fogMaterial = new THREE.MeshBasicMaterial({
-//   map: fogTexture,
-//   transparent: true,
-//   opacity: 0.5,
-// });
-
-// // Plano grande para la textura de fondo
-// const fogPlane = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), fogMaterial);
-// fogPlane.position.z = -30; // Alejarlo para que sea un fondo
-// scene.add(fogPlane);
-
-// // Animar la textura de la niebla
-// function animateFog() {
-//   fogMaterial.map.offset.y += 0.0002; // Movimiento lento vertical
-//   fogMaterial.map.offset.x += 0.0002; // Movimiento lento horizontal
-//   renderer.render(scene, camera);
-//   requestAnimationFrame(animateFog);
-// }
-
-// animateFog();
 
 
 
@@ -180,13 +158,12 @@ document.addEventListener("mousemove", (event) => {
 // Cargar el modelo
 const loader = new GLTFLoader();
 loader.load(
-  "http://localhost:5173/src/assets/robot_skull.glb",
+  "http://localhost:5173/static/robot_skull.glb",
   (gltf) => {
     model = gltf.scene;
     scene.add(model);
 
     console.log("Estructura del modelo:", model);
-
 
 
     
@@ -200,22 +177,41 @@ loader.load(
       return;
     }
 
+
+    let floatingAnimation;
+
+
+
+    function addFloatingEffect(object, amplitude = 0.1, duration = 2) {
+      floatingAnimation = gsap.to(object.position, {
+        y: `+=${amplitude}`, // Mover hacia arriba
+        repeat: -1, // Repetir indefinidamente
+        yoyo: true, // Volver al estado original
+        ease: "power1.inOut", // Suavidad de movimiento
+        duration: duration, // Duración del ciclo completo
+        delay:9
+      });
+    }
+    
+ 
+
    // Definir acciones específicas para cada sección
 const sectionActions = [
   {
     trigger: "[section-1]",
     onEnter: () => {
       scrollActive = true;
-      gsap.to(skull.position, { x: 2, y: 0, duration: 1, ease: "power2.out" });
+      gsap.to(skull.position, { z:0.5, x: 2, y: 0, duration: 1, ease: "power2.out" });
       gsap.to(skull.rotation, { y: Math.PI / -3, duration: 1, ease: "power2.out" });
-      gsap.to(light.position, { x: 20, z: 10, duration: 1, ease: "power2.out" });
+      if (floatingAnimation) floatingAnimation.pause(); // Pausar flotación
 
+   
     },
     onLeave: () => {
       scrollActive = false;
-      gsap.to(skull.position, { x: 0, y: 0, duration: 1, ease: "power2.inOut" });
+      gsap.to(skull.position, { z:0, x: 0, y: 0, duration: 1, ease: "power2.inOut" });
       gsap.to(skull.rotation, { y: 0, duration: 1, ease: "power2.inOut" });
-      gsap.to(light.position, { x: 95, z: 30, duration: 1, ease: "power2.inOut" });
+      if (floatingAnimation) floatingAnimation.resume(); // Pausar flotación
 
     },
   },
@@ -223,30 +219,87 @@ const sectionActions = [
     trigger: "[section-2]",
     onEnter: () => {
       scrollActive = true;
-      gsap.to(skull.position, { z: 1,y:0.5,x:-2, duration: 1, ease: "power2.out" });
-      gsap.to(skull.rotation, {y: Math.PI / 2, duration: 1, ease: "power2.out" });
-      gsap.to(light, { intensity: 8, duration: 1, ease: "power2.out" });
-      gsap.to(light.position, { x: 10, y: 5, z: 20, duration: 1, ease: "power2.out" });
- 
+      gsap.to(skull.position, {z:0, y:0, x:-2 , duration: 1, ease: "power2.out" });
+      gsap.to(skull.rotation, { y: Math.PI / 2, duration: 1, ease: "power2.out" });
+      if (floatingAnimation) floatingAnimation.pause(); // Pausar flotación
 
     },
     onLeave: () => {
-      gsap.to(skull.position, { z: 0,y:0, duration: 1, ease: "power2.inOut" });
+      gsap.to(skull.position, { z: 0,y:0, x:-2, duration: 1, ease: "power2.inOut" });
       gsap.to(light, { intensity: 6, duration: 1, ease: "power2.inOut" });
-      gsap.to(light.position, { x: 15, y: 0, z: 30, duration: 1, ease: "power2.inOut" });
-    
+      if (floatingAnimation) floatingAnimation.resume(); // Pausar flotación
       
     },
   },
   {
-    trigger: ".section-3",
+    trigger: "[section-3]",
     onEnter: () => {
-      gsap.to(skull.rotation, { x: Math.PI / 2, duration: 1, ease: "power2.out" });
+      gsap.to(skull.rotation, { x: Math.PI / 1, duration: 1, ease: "power2.out" });
+      gsap.to(skull.position, { z: 0,y:0,x:-2, duration: 1, ease: "power2.inOut" });
+
+      if (floatingAnimation) floatingAnimation.pause(); // Pausar flotación
+
     },
     onLeave: () => {
+      gsap.to(skull.position, { z: 0,y:0,x:-2, duration: 1, ease: "power2.inOut" });
       gsap.to(skull.rotation, { x: 0, duration: 1, ease: "power2.inOut" });
+      if (floatingAnimation) floatingAnimation.resume(); // Pausar flotación
+
     },
   },
+  {
+    trigger: "[section-4]",
+    onEnter: () => {
+      gsap.to(skull.rotation, { x: 0, y: 0, duration: 1, ease: "power2.out" });
+      gsap.to(skull.position, { x: 0,y:0,  duration: 1, ease: "power2.out" });
+      if (floatingAnimation) floatingAnimation.pause(); // Pausar flotación
+
+    },
+    onLeave: () => {
+      gsap.to(skull.rotation, { x: 0,y:0, duration: 1, ease: "power2.inOut" });
+      gsap.to(skull.position, { x: 0,y:0,  duration: 1, ease: "power2.out" });
+      if (floatingAnimation) floatingAnimation.resume(); // Pausar flotación
+
+    },
+  },
+  {
+    trigger: "[section-5]",
+    onEnter: () => {
+      gsap.to(jaw.rotation, {
+        x: Math.PI / 6,
+        duration: 0.5,
+        ease: "power2.out",
+      });
+  
+      gsap.to(lowTeeth.rotation, {
+        x: Math.PI / 6,
+        duration: 0.5,
+        ease: "power2.out",
+      });
+      gsap.to(skull.rotation, {x: 0,y:0,x: Math.PI / -5,  duration: 1, ease: "power2.out" });
+      gsap.to(skull.position, {delay:0.5, z:3,x: 0,y:1,  duration: 1, ease: "power2.out" });
+      if (floatingAnimation) floatingAnimation.pause(); // Pausar flotación
+
+    },
+    onLeave: () => {
+      gsap.to(jaw.rotation, {
+        x: 0,
+        duration: 0.5,
+        ease: "power2.out",
+      });
+  
+      gsap.to(lowTeeth.rotation, {
+        x: 0,
+        duration: 0.5,
+        ease: "power2.out",
+      });
+      gsap.to(skull.rotation, {x: 0,y:0,x:0,  duration: 1, ease: "power2.out" });
+      gsap.to(skull.position, { z:0,x: 0,y:0,  duration: 1, ease: "power2.out" });
+      if (floatingAnimation) floatingAnimation.resume(); // Pausar flotación
+
+    },
+  },
+  
 ];
 
 // Crear ScrollTriggers en base al array de acciones
@@ -263,11 +316,20 @@ sectionActions.forEach((section) => {
 });
 
 
+
+   // Aplicar el efecto de flotación al skull
+   if (skull && scrollActive == false) {
+    addFloatingEffect(skull);
+  }
+
     // Animación inicial de rebote
-    gsap.from(model.position, {
-      y: 3,
+    gsap.fromTo(model.position,{
+      y: -10,
+    }, {
+      y: 0,
+      delay:6,
       duration: 2,
-      ease: "bounce",
+     // ease: "bounce",
     });
 
     gsap.from(model.rotation, {
@@ -312,14 +374,20 @@ function animate() {
   currentHeadX = lerp(currentHeadX, targetMouseY * 0.1, 0.05); 
   currentHeadY = lerp(currentHeadY, targetMouseX * 0.1, 0.05);
 
-  currentEyeX = lerp(currentEyeY, targetMouseY * 0.2, 0.2); 
-  currentEyeY = lerp(currentEyeX, targetMouseX * 0.2, 0.2);
+  currentEyeX = lerp(currentEyeY, targetMouseY * 0.1, 0.01); 
+  currentEyeY = lerp(currentEyeX, targetMouseX * 0.1, 0.01);
 
 
   if (skull && scrollActive == false) {
     gsap.to(skull.rotation, {
       x: currentHeadX,
       y: currentHeadY,
+      duration: 0.2, 
+      ease: "power2.out",
+    });
+    gsap.to(halo.rotation, {
+      x: currentEyeX,
+      y: currentEyeY,
       duration: 0.2, 
       ease: "power2.out",
     });
@@ -341,3 +409,25 @@ function animate() {
 
 
 animate();
+
+
+
+
+
+var lenis = new Lenis({
+  lerp: 0.1,
+  wheelMultiplier: 0.7,
+  gestureOrientation: "vertical",
+  normalizeWheel: false,
+  smoothTouch: false
+});
+
+document.querySelector(".page-wrapper");
+lenis.start();
+
+function raf(time) {
+lenis.raf(time);
+requestAnimationFrame(raf);
+}
+
+requestAnimationFrame(raf);
