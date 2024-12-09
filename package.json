@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "esbuild src/shirt.js --bundle --outfile=dist/shirt.js --format=esm",
+    "build": "esbuild src/shirt.js --bundle --outfile=dist/shirt.js --format=esm && cp -r public/* dist/",
     "preview": "vite preview"
   },
   "devDependencies": {
