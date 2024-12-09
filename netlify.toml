@@ -1,4 +1,6 @@
 [[headers]]
-for = "https://3dlanding.netlify.app/shirt.js" # Puedes ajustar esta ruta según tus necesidades
-  [headers.values]
-  access-control-allow-origin = "*" # Permite todas las fuentes; ajusta según sea necesario
+for = "/*"
+[headers.values]
+  Access-Control-Allow-Origin = "*"
+  Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+  Access-Control-Allow-Headers = "Content-Type"
