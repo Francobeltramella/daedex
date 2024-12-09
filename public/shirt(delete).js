@@ -7,10 +7,10 @@ import gsap from 'gsap';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({antialias: true});
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor(0x000000, 0); 
+renderer.setClearColor(0x000000, 0);
 
 document.querySelector(".element-3d").appendChild(renderer.domElement);
 
@@ -19,7 +19,7 @@ light.position.set(55, 50, 30);
 scene.add(light);
 
 
-const haloGeometry = new THREE.TorusGeometry(1.8, 0.02, 508, 3000); 
+const haloGeometry = new THREE.TorusGeometry(1.8, 0.02, 508, 3000);
 
 const haloShaderMaterial = new THREE.ShaderMaterial({
   uniforms: {
@@ -49,8 +49,8 @@ const haloShaderMaterial = new THREE.ShaderMaterial({
       gl_FragColor = vec4(color * fresnel + emissive, 1.0);
     }
   `,
-  transparent: false, 
-  side: THREE.DoubleSide, 
+  transparent: false,
+  side: THREE.DoubleSide,
 });
 const halo = new THREE.Mesh(haloGeometry, haloShaderMaterial);
 halo.position.set(0, 0.1, 0); // Colocar encima del skull
@@ -66,7 +66,7 @@ const metalMaterial = new THREE.MeshStandardMaterial({
 
 
 
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); 
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -75,14 +75,14 @@ controls.enableRotate = false;
 
 camera.position.z = 3;
 
-let model, pCylinder4, skull,jaw,lowTeeth;
+let model, pCylinder4, skull, jaw, lowTeeth;
 
 let targetMouseX = 0,
-  targetMouseY = 0; 
+  targetMouseY = 0;
 let currentHeadX = 0,
-  currentHeadY = 0; 
+  currentHeadY = 0;
 let currentEyeX = 0,
-  currentEyeY = 0; 
+  currentEyeY = 0;
 
 let scrollActive
 
@@ -158,7 +158,7 @@ document.addEventListener("mousemove", (event) => {
 // Cargar el modelo
 const loader = new GLTFLoader();
 loader.load(
-  "http://localhost:5173/static/robot_skull.glb",
+  "/robot_skull.glb",
   (gltf) => {
     model = gltf.scene;
     scene.add(model);
@@ -166,7 +166,7 @@ loader.load(
     console.log("Estructura del modelo:", model);
 
 
-    
+
     pCylinder4 = model.getObjectByName("pCylinder4");
     skull = model.getObjectByName("Sketchfab_Scene");
     jaw = model.getObjectByName("Jaw"); // Mandíbula
@@ -189,147 +189,147 @@ loader.load(
         yoyo: true, // Volver al estado original
         ease: "power1.inOut", // Suavidad de movimiento
         duration: duration, // Duración del ciclo completo
-        delay:9
+        delay: 9
       });
     }
-    
- 
 
-   // Definir acciones específicas para cada sección
-const sectionActions = [
-  {
-    trigger: "[section-1]",
-    onEnter: () => {
-      scrollActive = true;
-      gsap.to(skull.position, { z:0.5, x: 2, y: 0, duration: 1, ease: "power2.out" });
-      gsap.to(skull.rotation, { y: Math.PI / -3, duration: 1, ease: "power2.out" });
-      if (floatingAnimation) floatingAnimation.pause(); // Pausar flotación
 
-   
-    },
-    onLeave: () => {
-      scrollActive = false;
-      gsap.to(skull.position, { z:0, x: 0, y: 0, duration: 1, ease: "power2.inOut" });
-      gsap.to(skull.rotation, { y: 0, duration: 1, ease: "power2.inOut" });
-      if (floatingAnimation) floatingAnimation.resume(); // Pausar flotación
 
-    },
-  },
-  {
-    trigger: "[section-2]",
-    onEnter: () => {
-      scrollActive = true;
-      gsap.to(skull.position, {z:0, y:0, x:-2 , duration: 1, ease: "power2.out" });
-      gsap.to(skull.rotation, { y: Math.PI / 2, duration: 1, ease: "power2.out" });
-      if (floatingAnimation) floatingAnimation.pause(); // Pausar flotación
+    // Definir acciones específicas para cada sección
+    const sectionActions = [
+      {
+        trigger: "[section-1]",
+        onEnter: () => {
+          scrollActive = true;
+          gsap.to(skull.position, { z: 0.5, x: 2, y: 0, duration: 1, ease: "power2.out" });
+          gsap.to(skull.rotation, { y: Math.PI / -3, duration: 1, ease: "power2.out" });
+          if (floatingAnimation) floatingAnimation.pause(); // Pausar flotación
 
-    },
-    onLeave: () => {
-      gsap.to(skull.position, { z: 0,y:0, x:-2, duration: 1, ease: "power2.inOut" });
-      gsap.to(light, { intensity: 6, duration: 1, ease: "power2.inOut" });
-      if (floatingAnimation) floatingAnimation.resume(); // Pausar flotación
-      
-    },
-  },
-  {
-    trigger: "[section-3]",
-    onEnter: () => {
-      gsap.to(skull.rotation, { x: Math.PI / 1, duration: 1, ease: "power2.out" });
-      gsap.to(skull.position, { z: 0,y:0,x:-2, duration: 1, ease: "power2.inOut" });
 
-      if (floatingAnimation) floatingAnimation.pause(); // Pausar flotación
+        },
+        onLeave: () => {
+          scrollActive = false;
+          gsap.to(skull.position, { z: 0, x: 0, y: 0, duration: 1, ease: "power2.inOut" });
+          gsap.to(skull.rotation, { y: 0, duration: 1, ease: "power2.inOut" });
+          if (floatingAnimation) floatingAnimation.resume(); // Pausar flotación
 
-    },
-    onLeave: () => {
-      gsap.to(skull.position, { z: 0,y:0,x:-2, duration: 1, ease: "power2.inOut" });
-      gsap.to(skull.rotation, { x: 0, duration: 1, ease: "power2.inOut" });
-      if (floatingAnimation) floatingAnimation.resume(); // Pausar flotación
+        },
+      },
+      {
+        trigger: "[section-2]",
+        onEnter: () => {
+          scrollActive = true;
+          gsap.to(skull.position, { z: 0, y: 0, x: -2, duration: 1, ease: "power2.out" });
+          gsap.to(skull.rotation, { y: Math.PI / 2, duration: 1, ease: "power2.out" });
+          if (floatingAnimation) floatingAnimation.pause(); // Pausar flotación
 
-    },
-  },
-  {
-    trigger: "[section-4]",
-    onEnter: () => {
-      gsap.to(skull.rotation, { x: 0, y: 0, duration: 1, ease: "power2.out" });
-      gsap.to(skull.position, { x: 0,y:0,  duration: 1, ease: "power2.out" });
-      if (floatingAnimation) floatingAnimation.pause(); // Pausar flotación
+        },
+        onLeave: () => {
+          gsap.to(skull.position, { z: 0, y: 0, x: -2, duration: 1, ease: "power2.inOut" });
+          gsap.to(light, { intensity: 6, duration: 1, ease: "power2.inOut" });
+          if (floatingAnimation) floatingAnimation.resume(); // Pausar flotación
 
-    },
-    onLeave: () => {
-      gsap.to(skull.rotation, { x: 0,y:0, duration: 1, ease: "power2.inOut" });
-      gsap.to(skull.position, { x: 0,y:0,  duration: 1, ease: "power2.out" });
-      if (floatingAnimation) floatingAnimation.resume(); // Pausar flotación
+        },
+      },
+      {
+        trigger: "[section-3]",
+        onEnter: () => {
+          gsap.to(skull.rotation, { x: Math.PI / 1, duration: 1, ease: "power2.out" });
+          gsap.to(skull.position, { z: 0, y: 0, x: -2, duration: 1, ease: "power2.inOut" });
 
-    },
-  },
-  {
-    trigger: "[section-5]",
-    onEnter: () => {
-      gsap.to(jaw.rotation, {
-        x: Math.PI / 6,
-        duration: 0.5,
-        ease: "power2.out",
+          if (floatingAnimation) floatingAnimation.pause(); // Pausar flotación
+
+        },
+        onLeave: () => {
+          gsap.to(skull.position, { z: 0, y: 0, x: -2, duration: 1, ease: "power2.inOut" });
+          gsap.to(skull.rotation, { x: 0, duration: 1, ease: "power2.inOut" });
+          if (floatingAnimation) floatingAnimation.resume(); // Pausar flotación
+
+        },
+      },
+      {
+        trigger: "[section-4]",
+        onEnter: () => {
+          gsap.to(skull.rotation, { x: 0, y: 0, duration: 1, ease: "power2.out" });
+          gsap.to(skull.position, { x: 0, y: 0, duration: 1, ease: "power2.out" });
+          if (floatingAnimation) floatingAnimation.pause(); // Pausar flotación
+
+        },
+        onLeave: () => {
+          gsap.to(skull.rotation, { x: 0, y: 0, duration: 1, ease: "power2.inOut" });
+          gsap.to(skull.position, { x: 0, y: 0, duration: 1, ease: "power2.out" });
+          if (floatingAnimation) floatingAnimation.resume(); // Pausar flotación
+
+        },
+      },
+      {
+        trigger: "[section-5]",
+        onEnter: () => {
+          gsap.to(jaw.rotation, {
+            x: Math.PI / 6,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+
+          gsap.to(lowTeeth.rotation, {
+            x: Math.PI / 6,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+          gsap.to(skull.rotation, { x: 0, y: 0, x: Math.PI / -5, duration: 1, ease: "power2.out" });
+          gsap.to(skull.position, { delay: 0.5, z: 3, x: 0, y: 1, duration: 1, ease: "power2.out" });
+          if (floatingAnimation) floatingAnimation.pause(); // Pausar flotación
+
+        },
+        onLeave: () => {
+          gsap.to(jaw.rotation, {
+            x: 0,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+
+          gsap.to(lowTeeth.rotation, {
+            x: 0,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+          gsap.to(skull.rotation, { x: 0, y: 0, x: 0, duration: 1, ease: "power2.out" });
+          gsap.to(skull.position, { z: 0, x: 0, y: 0, duration: 1, ease: "power2.out" });
+          if (floatingAnimation) floatingAnimation.resume(); // Pausar flotación
+
+        },
+      },
+
+    ];
+
+    // Crear ScrollTriggers en base al array de acciones
+    sectionActions.forEach((section) => {
+      ScrollTrigger.create({
+        trigger: section.trigger, // El selector de la sección
+        start: "top center", // Cuando la sección llega al centro de la ventana
+        end: "bottom center", // Hasta que salga del centro
+        onEnter: section.onEnter, // Acción al entrar
+        onLeave: section.onLeave, // Acción al salir
+        onEnterBack: section.onEnter, // Acción al volver a entrar desde abajo
+        onLeaveBack: section.onLeave, // Acción al volver a salir hacia arriba
       });
-  
-      gsap.to(lowTeeth.rotation, {
-        x: Math.PI / 6,
-        duration: 0.5,
-        ease: "power2.out",
-      });
-      gsap.to(skull.rotation, {x: 0,y:0,x: Math.PI / -5,  duration: 1, ease: "power2.out" });
-      gsap.to(skull.position, {delay:0.5, z:3,x: 0,y:1,  duration: 1, ease: "power2.out" });
-      if (floatingAnimation) floatingAnimation.pause(); // Pausar flotación
-
-    },
-    onLeave: () => {
-      gsap.to(jaw.rotation, {
-        x: 0,
-        duration: 0.5,
-        ease: "power2.out",
-      });
-  
-      gsap.to(lowTeeth.rotation, {
-        x: 0,
-        duration: 0.5,
-        ease: "power2.out",
-      });
-      gsap.to(skull.rotation, {x: 0,y:0,x:0,  duration: 1, ease: "power2.out" });
-      gsap.to(skull.position, { z:0,x: 0,y:0,  duration: 1, ease: "power2.out" });
-      if (floatingAnimation) floatingAnimation.resume(); // Pausar flotación
-
-    },
-  },
-  
-];
-
-// Crear ScrollTriggers en base al array de acciones
-sectionActions.forEach((section) => {
-  ScrollTrigger.create({
-    trigger: section.trigger, // El selector de la sección
-    start: "top center", // Cuando la sección llega al centro de la ventana
-    end: "bottom center", // Hasta que salga del centro
-    onEnter: section.onEnter, // Acción al entrar
-    onLeave: section.onLeave, // Acción al salir
-    onEnterBack: section.onEnter, // Acción al volver a entrar desde abajo
-    onLeaveBack: section.onLeave, // Acción al volver a salir hacia arriba
-  });
-});
+    });
 
 
 
-   // Aplicar el efecto de flotación al skull
-   if (skull && scrollActive == false) {
-    addFloatingEffect(skull);
-  }
+    // Aplicar el efecto de flotación al skull
+    if (skull && scrollActive == false) {
+      addFloatingEffect(skull);
+    }
 
     // Animación inicial de rebote
-    gsap.fromTo(model.position,{
+    gsap.fromTo(model.position, {
       y: -10,
     }, {
       y: 0,
-      delay:6,
+      delay: 6,
       duration: 2,
-     // ease: "bounce",
+      // ease: "bounce",
     });
 
     gsap.from(model.rotation, {
@@ -371,10 +371,10 @@ document.addEventListener("click", () => {
 function animate() {
   requestAnimationFrame(animate);
 
-  currentHeadX = lerp(currentHeadX, targetMouseY * 0.1, 0.05); 
+  currentHeadX = lerp(currentHeadX, targetMouseY * 0.1, 0.05);
   currentHeadY = lerp(currentHeadY, targetMouseX * 0.1, 0.05);
 
-  currentEyeX = lerp(currentEyeY, targetMouseY * 0.1, 0.01); 
+  currentEyeX = lerp(currentEyeY, targetMouseY * 0.1, 0.01);
   currentEyeY = lerp(currentEyeX, targetMouseX * 0.1, 0.01);
 
 
@@ -382,13 +382,13 @@ function animate() {
     gsap.to(skull.rotation, {
       x: currentHeadX,
       y: currentHeadY,
-      duration: 0.2, 
+      duration: 0.2,
       ease: "power2.out",
     });
     gsap.to(halo.rotation, {
       x: currentEyeX,
       y: currentEyeY,
-      duration: 0.2, 
+      duration: 0.2,
       ease: "power2.out",
     });
   }
@@ -397,13 +397,13 @@ function animate() {
     gsap.to(pCylinder4.rotation, {
       x: currentEyeX,
       y: currentEyeY,
-      duration: 0.1, 
+      duration: 0.1,
       ease: "power2.out",
     });
   }
 
   controls.update();
-  renderer.render(scene, camera); 
+  renderer.render(scene, camera);
 }
 
 
@@ -426,8 +426,8 @@ document.querySelector(".page-wrapper");
 lenis.start();
 
 function raf(time) {
-lenis.raf(time);
-requestAnimationFrame(raf);
+  lenis.raf(time);
+  requestAnimationFrame(raf);
 }
 
 requestAnimationFrame(raf);

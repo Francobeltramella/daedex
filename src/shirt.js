@@ -10,7 +10,7 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer();
 
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor(0x000000, 0); 
+renderer.setClearColor(0x000000, 0);
 
 document.querySelector(".element-3d").appendChild(renderer.domElement);
 
@@ -30,7 +30,7 @@ const loaderfont = new FontLoader();
 loaderfont.load(
   'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', // Fuente JSON
   (font) => {
-    const texts = ["A DESIGN AND", "STRATEGY PARTNER","FOCUSED EXCLUSIVELY"]; // Texto en dos líneas
+    const texts = ["A DESIGN AND", "STRATEGY PARTNER", "FOCUSED EXCLUSIVELY"]; // Texto en dos líneas
     const lineHeight = 0.8; // Distancia entre las líneas
     texts.forEach((line, index) => {
       const textGeometry = new TextGeometry(line, {
@@ -54,7 +54,7 @@ loaderfont.load(
       textMesh.position.y = -index * lineHeight; // Ajusta la posición en el eje Y
       //scene.add(textMesh);
     });
-    
+
   },
   undefined,
   (err) => {
@@ -63,7 +63,7 @@ loaderfont.load(
 );
 
 
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); 
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -72,14 +72,14 @@ controls.enableRotate = false;
 
 camera.position.z = 3;
 
-let model, pCylinder4, skull,jaw,lowTeeth;
+let model, pCylinder4, skull, jaw, lowTeeth;
 
 let targetMouseX = 0,
-  targetMouseY = 0; 
+  targetMouseY = 0;
 let currentHeadX = 0,
-  currentHeadY = 0; 
+  currentHeadY = 0;
 let currentEyeX = 0,
-  currentEyeY = 0; 
+  currentEyeY = 0;
 
 let scrollActive
 scrollActive = false;
@@ -180,7 +180,7 @@ document.addEventListener("mousemove", (event) => {
 // Cargar el modelo
 const loader = new GLTFLoader();
 loader.load(
-  "http://localhost:5173/src/assets/robot_skull.glb",
+  "/robot_skull.glb",
   (gltf) => {
     model = gltf.scene;
     scene.add(model);
@@ -189,7 +189,7 @@ loader.load(
 
 
 
-    
+
     pCylinder4 = model.getObjectByName("pCylinder4");
     skull = model.getObjectByName("Sketchfab_Scene");
     jaw = model.getObjectByName("Jaw"); // Mandíbula
@@ -200,67 +200,67 @@ loader.load(
       return;
     }
 
-   // Definir acciones específicas para cada sección
-const sectionActions = [
-  {
-    trigger: "[section-1]",
-    onEnter: () => {
-      scrollActive = true;
-      gsap.to(skull.position, { x: 2, y: 0, duration: 1, ease: "power2.out" });
-      gsap.to(skull.rotation, { y: Math.PI / -3, duration: 1, ease: "power2.out" });
-      gsap.to(light.position, { x: 20, z: 10, duration: 1, ease: "power2.out" });
+    // Definir acciones específicas para cada sección
+    const sectionActions = [
+      {
+        trigger: "[section-1]",
+        onEnter: () => {
+          scrollActive = true;
+          gsap.to(skull.position, { x: 2, y: 0, duration: 1, ease: "power2.out" });
+          gsap.to(skull.rotation, { y: Math.PI / -3, duration: 1, ease: "power2.out" });
+          gsap.to(light.position, { x: 20, z: 10, duration: 1, ease: "power2.out" });
 
-    },
-    onLeave: () => {
-      scrollActive = false;
-      gsap.to(skull.position, { x: 0, y: 0, duration: 1, ease: "power2.inOut" });
-      gsap.to(skull.rotation, { y: 0, duration: 1, ease: "power2.inOut" });
-      gsap.to(light.position, { x: 95, z: 30, duration: 1, ease: "power2.inOut" });
+        },
+        onLeave: () => {
+          scrollActive = false;
+          gsap.to(skull.position, { x: 0, y: 0, duration: 1, ease: "power2.inOut" });
+          gsap.to(skull.rotation, { y: 0, duration: 1, ease: "power2.inOut" });
+          gsap.to(light.position, { x: 95, z: 30, duration: 1, ease: "power2.inOut" });
 
-    },
-  },
-  {
-    trigger: "[section-2]",
-    onEnter: () => {
-      scrollActive = true;
-      gsap.to(skull.position, { z: 1,y:0.5,x:-2, duration: 1, ease: "power2.out" });
-      gsap.to(skull.rotation, {y: Math.PI / 2, duration: 1, ease: "power2.out" });
-      gsap.to(light, { intensity: 8, duration: 1, ease: "power2.out" });
-      gsap.to(light.position, { x: 10, y: 5, z: 20, duration: 1, ease: "power2.out" });
- 
+        },
+      },
+      {
+        trigger: "[section-2]",
+        onEnter: () => {
+          scrollActive = true;
+          gsap.to(skull.position, { z: 1, y: 0.5, x: -2, duration: 1, ease: "power2.out" });
+          gsap.to(skull.rotation, { y: Math.PI / 2, duration: 1, ease: "power2.out" });
+          gsap.to(light, { intensity: 8, duration: 1, ease: "power2.out" });
+          gsap.to(light.position, { x: 10, y: 5, z: 20, duration: 1, ease: "power2.out" });
 
-    },
-    onLeave: () => {
-      gsap.to(skull.position, { z: 0,y:0, duration: 1, ease: "power2.inOut" });
-      gsap.to(light, { intensity: 6, duration: 1, ease: "power2.inOut" });
-      gsap.to(light.position, { x: 15, y: 0, z: 30, duration: 1, ease: "power2.inOut" });
-    
-      
-    },
-  },
-  {
-    trigger: ".section-3",
-    onEnter: () => {
-      gsap.to(skull.rotation, { x: Math.PI / 2, duration: 1, ease: "power2.out" });
-    },
-    onLeave: () => {
-      gsap.to(skull.rotation, { x: 0, duration: 1, ease: "power2.inOut" });
-    },
-  },
-];
 
-// Crear ScrollTriggers en base al array de acciones
-sectionActions.forEach((section) => {
-  ScrollTrigger.create({
-    trigger: section.trigger, // El selector de la sección
-    start: "top center", // Cuando la sección llega al centro de la ventana
-    end: "bottom center", // Hasta que salga del centro
-    onEnter: section.onEnter, // Acción al entrar
-    onLeave: section.onLeave, // Acción al salir
-    onEnterBack: section.onEnter, // Acción al volver a entrar desde abajo
-    onLeaveBack: section.onLeave, // Acción al volver a salir hacia arriba
-  });
-});
+        },
+        onLeave: () => {
+          gsap.to(skull.position, { z: 0, y: 0, duration: 1, ease: "power2.inOut" });
+          gsap.to(light, { intensity: 6, duration: 1, ease: "power2.inOut" });
+          gsap.to(light.position, { x: 15, y: 0, z: 30, duration: 1, ease: "power2.inOut" });
+
+
+        },
+      },
+      {
+        trigger: ".section-3",
+        onEnter: () => {
+          gsap.to(skull.rotation, { x: Math.PI / 2, duration: 1, ease: "power2.out" });
+        },
+        onLeave: () => {
+          gsap.to(skull.rotation, { x: 0, duration: 1, ease: "power2.inOut" });
+        },
+      },
+    ];
+
+    // Crear ScrollTriggers en base al array de acciones
+    sectionActions.forEach((section) => {
+      ScrollTrigger.create({
+        trigger: section.trigger, // El selector de la sección
+        start: "top center", // Cuando la sección llega al centro de la ventana
+        end: "bottom center", // Hasta que salga del centro
+        onEnter: section.onEnter, // Acción al entrar
+        onLeave: section.onLeave, // Acción al salir
+        onEnterBack: section.onEnter, // Acción al volver a entrar desde abajo
+        onLeaveBack: section.onLeave, // Acción al volver a salir hacia arriba
+      });
+    });
 
 
     // Animación inicial de rebote
@@ -309,10 +309,10 @@ document.addEventListener("click", () => {
 function animate() {
   requestAnimationFrame(animate);
 
-  currentHeadX = lerp(currentHeadX, targetMouseY * 0.1, 0.05); 
+  currentHeadX = lerp(currentHeadX, targetMouseY * 0.1, 0.05);
   currentHeadY = lerp(currentHeadY, targetMouseX * 0.1, 0.05);
 
-  currentEyeX = lerp(currentEyeY, targetMouseY * 0.2, 0.2); 
+  currentEyeX = lerp(currentEyeY, targetMouseY * 0.2, 0.2);
   currentEyeY = lerp(currentEyeX, targetMouseX * 0.2, 0.2);
 
 
@@ -320,7 +320,7 @@ function animate() {
     gsap.to(skull.rotation, {
       x: currentHeadX,
       y: currentHeadY,
-      duration: 0.2, 
+      duration: 0.2,
       ease: "power2.out",
     });
   }
@@ -329,13 +329,13 @@ function animate() {
     gsap.to(pCylinder4.rotation, {
       x: currentEyeX,
       y: currentEyeY,
-      duration: 0.1, 
+      duration: 0.1,
       ease: "power2.out",
     });
   }
 
   controls.update();
-  renderer.render(scene, camera); 
+  renderer.render(scene, camera);
 }
 
 
