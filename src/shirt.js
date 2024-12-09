@@ -181,7 +181,7 @@ document.addEventListener("mousemove", (event) => {
 // Cargar el modelo
 const loader = new GLTFLoader();
 loader.load(
-  process.env.BASE_URL + "/robot_skull.glb",
+  "https://animation-3d-poc.netlify.app/robot_skull.glb",
   (gltf) => {
     model = gltf.scene;
     scene.add(model);
