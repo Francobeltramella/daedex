@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "esbuild src/shirt.js --bundle --outfile=dist/shirt.js --format=esm",
     "preview": "vite preview"
   },
   "devDependencies": {
+    "esbuild": "^0.24.0",
     "vite": "^6.0.1"
   },
   "dependencies": {
