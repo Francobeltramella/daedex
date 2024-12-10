@@ -20,6 +20,17 @@ light.position.set(55, 50, 30);
 scene.add(light);
 
 
+window.addEventListener('resize', () => {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix(); // Actualiza la matriz de proyección con el nuevo aspecto
+
+  renderer.setSize(width, height); // Ajusta el tamaño del renderizador
+});
+
+
 const haloGeometry = new THREE.TorusGeometry(1.8, 0.02, 508, 3000); 
 
 const haloShaderMaterial = new THREE.ShaderMaterial({
@@ -164,7 +175,7 @@ document.addEventListener("mousemove", (event) => {
 // Cargar el modelo
 const loader = new GLTFLoader();
 loader.load(
-  "http://localhost:5173/static/robot_skull.glb",
+  "https://animation-3d-poc.netlify.app/robot_skull.glb",
   (gltf) => {
     model = gltf.scene;
     scene.add(model);
