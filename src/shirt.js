@@ -363,12 +363,14 @@ sectionActions.forEach((section) => {
       y: 0.3,
       delay:6,
       duration: 2,
-     // ease: "bounce",
+      ease: "bounce",
     });
 
     gsap.from(model.rotation, {
       y: Math.PI * 2,
-      duration: 2,
+      
+    },{
+      y: 0,
     });
   },
   (xhr) => {
