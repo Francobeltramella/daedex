@@ -209,6 +209,9 @@ loader.load(
         delay:9
       });
     }
+    if (skull && scrollActive == false) {
+      addFloatingEffect(skull);
+    }
     
     gsap.set("[finish]",{opacity:0})
 
@@ -351,17 +354,14 @@ sectionActions.forEach((section) => {
 
 
 
-   // Aplicar el efecto de flotación al skull
-   if (skull && scrollActive == false) {
-    addFloatingEffect(skull);
-  }
+  
 
     // Animación inicial de rebote
     gsap.fromTo(model.position,{
       y: -10,
     }, {
       y: 0.3,
-      delay:6,
+      delay:5.5,
       duration: 2,
       ease: "bounce",
     });
