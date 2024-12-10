@@ -206,7 +206,7 @@ loader.load(
         yoyo: true, // Volver al estado original
         ease: "power1.inOut", // Suavidad de movimiento
         duration: duration, // Duración del ciclo completo
-        delay:9
+        delay:6
       });
     }
     if (skull && scrollActive == false) {
