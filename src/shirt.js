@@ -21,15 +21,15 @@ scene.add(light);
 
 
 window.addEventListener('resize', () => {
-  const width = window.innerWidth;
-  const height = window.innerHeight;
+  const container = document.querySelector(".element-3d");
+  const width = container.clientWidth; // Obtener el ancho del contenedor
+  const height = container.clientHeight; // Obtener la altura del contenedor
 
   camera.aspect = width / height;
-  camera.updateProjectionMatrix(); // Actualiza la matriz de proyección con el nuevo aspecto
+  camera.updateProjectionMatrix();
 
-  renderer.setSize(width, height); // Ajusta el tamaño del renderizador
+  renderer.setSize(width, height); // Ajustar el renderizador al tamaño del contenedor
 });
-
 
 const haloGeometry = new THREE.TorusGeometry(1.8, 0.02, 508, 3000); 
 
