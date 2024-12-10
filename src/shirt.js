@@ -206,13 +206,13 @@ loader.load(
         yoyo: true, // Volver al estado original
         ease: "power1.inOut", // Suavidad de movimiento
         duration: duration, // Duración del ciclo completo
-        delay:7
+       // delay:7
       });
     }
+    
     if (skull && scrollActive == false) {
       addFloatingEffect(skull);
     }
-    
     gsap.set("[finish]",{opacity:0})
 
    // Definir acciones específicas para cada sección
@@ -354,7 +354,10 @@ sectionActions.forEach((section) => {
 
 
 
-  
+if (floatingAnimation) {
+  floatingAnimation.pause();
+}
+
 
     // Animación inicial de rebote
     gsap.fromTo(model.position,{
@@ -364,6 +367,9 @@ sectionActions.forEach((section) => {
       delay:5.5,
       duration: 2,
      //ease: "bounce",
+     onComplete: () => {
+      if (floatingAnimation) floatingAnimation.resume();
+    }
     });
 
     gsap.fromTo(skull.rotation, {
@@ -381,6 +387,8 @@ sectionActions.forEach((section) => {
     console.error("Error al cargar el modelo:", error);
   }
 );
+
+
 // Función para abrir y cerrar la boca
 function toggleMouth(open) {
   if (jaw && lowTeeth) {
