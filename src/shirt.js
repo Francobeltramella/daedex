@@ -366,7 +366,7 @@ sectionActions.forEach((section) => {
      //ease: "bounce",
     });
 
-    gsap.fromTo(model.rotation, {
+    gsap.fromTo(skull.rotation, {
       y: Math.PI * 1,
       duration: 3,
       delay:5.5,
