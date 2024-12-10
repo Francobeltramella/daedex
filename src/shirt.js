@@ -22,13 +22,17 @@ scene.add(light);
 
 window.addEventListener('resize', () => {
   const container = document.querySelector(".element-3d");
-  const width = container.clientWidth; // Obtener el ancho del contenedor
-  const height = container.clientHeight; // Obtener la altura del contenedor
+  if (container) {
+    const width = container.offsetWidth;
+    const height = container.offsetHeight;
 
-  camera.aspect = width / height;
-  camera.updateProjectionMatrix();
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
 
-  renderer.setSize(width, height); // Ajustar el renderizador al tamaño del contenedor
+    renderer.setSize(width, height);
+  } else {
+    console.error("El contenedor .element-3d no está disponible.");
+  }
 });
 
 const haloGeometry = new THREE.TorusGeometry(1.8, 0.02, 508, 3000); 
