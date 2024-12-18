@@ -300,7 +300,7 @@ const sectionActions = [
         duration: 0.5,
         ease: "power2.out",
       });
-      gsap.to(skull.rotation, {x: 0,y:0,x: Math.PI / -6,  duration: 1, ease: "power2.out" });
+      gsap.to(skull.rotation, {y:0,x: Math.PI / -6,  duration: 1, ease: "power2.out" });
       gsap.to(skull.position, {delay:0.5, z:5,x: 0,y:0.3,  duration: 1, ease: "power2.out" });
       if (floatingAnimation) floatingAnimation.pause(); // Pausar flotación
       gsap.to("[finish]",{opacity:1, delay:0.9})
@@ -324,7 +324,7 @@ const sectionActions = [
       gsap.to("[finish]",{opacity:0, delay:0.9})
       gsap.to(".video-bg",{opacity:0.44,duration:0.3})
       gsap.to(skull, {opacity:1,duration:0.3,delay:0.5});
-      gsap.to(skull.rotation, {x: 0,y:0,x:0,  duration: 1, ease: "power2.out" });
+      gsap.to(skull.rotation, {x: 0,y:0,  duration: 1, ease: "power2.out" });
       gsap.to(skull.position, { z:0,x: 0,y:0,  duration: 1, ease: "power2.out" });
       if (floatingAnimation) floatingAnimation.resume(); // Pausar flotación
 
