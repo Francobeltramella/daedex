@@ -97,7 +97,7 @@ scene.add(directionalLight2);
 
 // Luz direccional trasera
 const directionalLight3 = new THREE.DirectionalLight(0xffffff, 0);
-directionalLight3.position.set(0, -20, 20); 
+directionalLight3.position.set(0, -25, 20); 
 scene.add(directionalLight3);
 
 
