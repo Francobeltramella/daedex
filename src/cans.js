@@ -228,4 +228,4 @@ gsap.fromTo(directionalLight3, {
     animate();
 }
 
-createScene('.element-3d-1', 'https://animation-3d-poc.netlify.app/cans.glb', { x: 0, y: 0, z: 0 });
+createScene('.element-3d-1', 'https://animation-3d-poc.netlify.app/can.glb', { x: 0, y: 0, z: 0 });
