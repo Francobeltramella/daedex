@@ -46,7 +46,7 @@ function createScene(containerSelector, modelPath, position = { x: 0, y: 0, z: 0
       });
 
       gsap.to(camera.position, {
-        x: 0, y: -4, z: 3, // Nueva posición de la cámara
+        x: 0, y: -3, z: 4, // Nueva posición de la cámara
         duration: 3,
         delay:0.5,       // Duración en segundos
         ease: "power1.inOut",
