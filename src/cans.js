@@ -222,7 +222,7 @@ gsap.fromTo(directionalLight3, {
                 addFloatingEffect(lataceleste);
               } });
             
-            gsap.fromTo(latadorada.position, { z:8, y: -9, },
+            gsap.fromTo(latadorada.position, { z:8, y: -10, },
             { z:0.6 ,y:0, duration: 9,delay:0.3, ease: "power4.out", onComplete: () => {
              // isfloating = true;  
              addFloatingEffect(latadorada);
