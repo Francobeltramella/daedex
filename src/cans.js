@@ -47,7 +47,8 @@ function createScene(containerSelector, modelPath, position = { x: 0, y: 0, z: 0
 
       gsap.to(camera.position, {
         x: 0, y: -3, z: 4, // Nueva posición de la cámara
-        duration: 3,       // Duración en segundos
+        duration: 3,
+        delay:0.3,       // Duración en segundos
         ease: "power1.inOut",
         onUpdate: () => {
           camera.lookAt(0, 0, 0); // La cámara siempre mira al centro
@@ -222,7 +223,7 @@ gsap.fromTo(directionalLight3, {
               } });
             
             gsap.fromTo(latadorada.position, { z:8, y: -9, },
-            { z:0.6 ,y:0, duration: 9, ease: "power4.out", onComplete: () => {
+            { z:0.6 ,y:0, duration: 9,delay:0.3, ease: "power4.out", onComplete: () => {
              // isfloating = true;  
              addFloatingEffect(latadorada);
      
