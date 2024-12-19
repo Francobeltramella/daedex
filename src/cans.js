@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import gsap from 'gsap';
 
 function createScene(containerSelector, modelPath, position = { x: 0, y: 0, z: 0 }) {
@@ -24,6 +24,7 @@ function createScene(containerSelector, modelPath, position = { x: 0, y: 0, z: 0
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
     container.appendChild(renderer.domElement);
+    renderer.setPixelRatio(window.devicePixelRatio);
 
     scene.background = null;
     renderer.setClearColor(0x000000, 0);
@@ -40,6 +41,7 @@ function createScene(containerSelector, modelPath, position = { x: 0, y: 0, z: 0
         x: Math.PI / 8,   // Leve inclinación en X
         y: Math.PI / 4,   // Rotación en Y
         duration: 3,
+        
         ease: "power1.inOut"
       });
 
@@ -62,7 +64,7 @@ function createScene(containerSelector, modelPath, position = { x: 0, y: 0, z: 0
       });
 
       gsap.to(camera.position, {
-        x: 0, y: 0, z: 6, // Nueva posición de la cámara
+        x: 0, y: -0.2, z: 3.5, // Nueva posición de la cámara
         duration: 5,  
         delay:6,     // Duración en segundos
         ease: "power4.Out",
@@ -73,6 +75,8 @@ function createScene(containerSelector, modelPath, position = { x: 0, y: 0, z: 0
 
     // Controles de cámara
     const controls = new OrbitControls(camera, renderer.domElement);
+//     controls.enableZoom = false;
+// controls.enableRotate = false;
 
     // Luces
    
@@ -82,50 +86,81 @@ function createScene(containerSelector, modelPath, position = { x: 0, y: 0, z: 0
 
   // Luz direccional izquierda (frontal)
 const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0);
-directionalLight1.position.set(-10, 40, 20); 
-directionalLight1.target.position.set(10, 0, 0); 
+directionalLight1.position.set(-70, -20, 20); 
 scene.add(directionalLight1);
-//scene.add(directionalLight1.target);
 
 // Luz direccional derecha (frontal)
 const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0);
-directionalLight2.position.set(10, -40, 20); 
-directionalLight2.target.position.set(0, 0, 0); 
+directionalLight2.position.set(70, 10, 20); 
 scene.add(directionalLight2);
-//scene.add(directionalLight2.target);
 
 // Luz direccional trasera
 const directionalLight3 = new THREE.DirectionalLight(0xffffff, 0);
-directionalLight3.position.set(0, 10, -10); 
-directionalLight3.target.position.set(0, 0, 0); 
+directionalLight3.position.set(0, -20, 20); 
 scene.add(directionalLight3);
-//scene.add(directionalLight3.target);
+
+
+// // Helper para luz direccional izquierda (frontal)
+// const arrowHelper1 = new THREE.ArrowHelper(
+//     directionalLight1.target.position.clone().sub(directionalLight1.position).normalize(), // Dirección
+//     directionalLight1.position, // Posición de inicio
+//     20, // Longitud del vector
+//     0xff0000 // Color del vector
+//   );
+//   scene.add(arrowHelper1);
+  
+//   // Helper para luz direccional derecha (frontal)
+//   const arrowHelper2 = new THREE.ArrowHelper(
+//     directionalLight2.target.position.clone().sub(directionalLight2.position).normalize(),
+//     directionalLight2.position,
+//     20,
+//     0x00ff00
+//   );
+//   scene.add(arrowHelper2);
+  
+//   // Helper para luz direccional trasera
+//   const arrowHelper3 = new THREE.ArrowHelper(
+//     directionalLight3.target.position.clone().sub(directionalLight3.position).normalize(),
+//     directionalLight3.position,
+//     20,
+//     0x0000ff
+//   );
+//   scene.add(arrowHelper3);
 
 gsap.fromTo(directionalLight2, {
     intensity: 0,      
     ease: "power2.inOut"
 },{
     duration: 5,  
-    intensity: 3,
+    intensity: 1.5,
     delay:6,
 }); 
 gsap.fromTo(directionalLight1, {
     intensity: 0,   
-    duration: 10,   
-    ease: "power2.inOut"
+   
 },{
-    duration:3,
-    //delay:3,
-    intensity: 2,
+    duration:5,   
+    ease: "power4.inOut",
+    delay:6.5,
+    intensity:1.5,
 }); 
 gsap.fromTo(directionalLight3, {
     intensity: 0,   
     ease: "power2.inOut"
 },{
     duration:3,
-    delay:3,
-    intensity: 3,
-}); 
+    delay:1.2,
+    intensity: 1.5,
+});
+
+// gsap.fromTo(ambientLight, {
+//     intensity: 0,   
+//     ease: "power2.inOut"
+// },{
+//     duration:3,
+//     delay:4,
+//     intensity: 2,
+// }); 
 
 
     // Cargar modelo GLB
@@ -134,7 +169,7 @@ gsap.fromTo(directionalLight3, {
         modelPath,
         (gltf) => {
             const model = gltf.scene;
-            //model.position.set(position.x, position.y, position.z);
+            model.position.set(position.x, position.y, position.z);
             scene.add(model);
             floatingModel = model; // Almacenar referencia al modelo cargado
             const latadorada = model.getObjectByName('lata-dorada');
@@ -146,41 +181,67 @@ gsap.fromTo(directionalLight3, {
             latadorada.userData.isFloating = false;
 
             const material =  lataazul.children
+
+
+
+            let floatingAnimation;
+
+
+
+            function addFloatingEffect(object, amplitude = 0.2, duration = 2) {
+              floatingAnimation = gsap.to(object.position, {
+                y: `+=${amplitude}`, // Mover hacia arriba
+                repeat: -1, // Repetir indefinidamente
+                yoyo: true, // Volver al estado original
+                ease: "power1.inOut", // Suavidad de movimiento
+                duration: duration, // Duración del ciclo completo
+                delay:0.3
+              });
+            }
             console.log(material,'gota')
 
+            
 
             gsap.fromTo(lataazul.position, {  y: 9, },
-                { y:0, duration: 5,  ease: "power4.out", onComplete: () => {
-                //isfloating = true;
+                { y:0, duration: 7,delay:1,  ease: "power2.out", onComplete: () => {
+                    addFloatingEffect(lataazul);
+
               } });
               gsap.fromTo(lataverde.position, {  y: 9, },
-                { y:0, duration: 5,delay:0.3,  ease: "power4.out", onComplete: () => {
-                //isfloating = true;
+                { y:1, duration: 7,delay:0.5,  ease: "power4.out", onComplete: () => {
+                    addFloatingEffect(lataverde);
               } });
               gsap.fromTo(lataamarilla.position, {  y: 9, },
-                { y:-0.3, duration: 5,delay:0.6,  ease: "power4.out", onComplete: () => {
-                //isfloating = true;
+                { y:0, duration: 7,delay:1.5,  ease: "power4.out", onComplete: () => {
+                addFloatingEffect(lataamarilla);
               } });
               gsap.fromTo(lataceleste.position, {  y: 9, },
-                { y:0, duration: 5,  ease: "power4.out", onComplete: () => {
+                { y:0.5, duration: 7,  ease: "power4.out", onComplete: () => {
                 //isfloating = true;
+                addFloatingEffect(lataceleste);
               } });
             
-            gsap.fromTo(latadorada.position, { z:6, y: -10, },
-                { z:1 ,y:0, duration: 12, ease: "power4.out", onComplete: () => {
-             // isfloating = true;
-                
-              } });
+            gsap.fromTo(latadorada.position, { z:8, y: -9, },
+            { z:0.6 ,y:0, duration: 9, ease: "power4.out", onComplete: () => {
+             // isfloating = true;  
+             addFloatingEffect(latadorada);
+     
+            } 
+        });
+              
 
 
           
             gsap.fromTo(latadorada.rotation, { y: THREE.MathUtils.degToRad(720) },
-            { y: THREE.MathUtils.degToRad(30), duration: 14, ease: "power4.out" });
+            { y: THREE.MathUtils.degToRad(40), duration: 10, ease: "power4.out" });
+
+            
 
             floatingModel.children.forEach((child) => {
                 if (child.name !== "lata-dorada") { 
                     child.userData.originalPosition = child.position.clone();
                     child.userData.offset = Math.random() * Math.PI * 2; 
+                    
                 }
             });
             console.log(`Modelo cargado en ${containerSelector}:`, model);
