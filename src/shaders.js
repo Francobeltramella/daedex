@@ -1,17 +1,16 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import GUI from 'lil-gui';
 import gsap from 'gsap';
-
-
 
 // Variables para suavizado del mouse
 let targetMousePosition = new THREE.Vector2();
 let currentMousePosition = new THREE.Vector2();
 let prevPosition = new THREE.Vector2();
 
-
-// variables
+// Variables de configuración de imágenes
 const images = [
   { container: 'imageContainer', image: 'myImage', gridSize: 10.0, strengthMin: 0.2, strengthMax: 0.2, colorOffset: 0.02 },
   { container: 'imageContainer2', image: 'myImage2', gridSize: 200.0, strengthMin: 0.3, strengthMax: 0.1, colorOffset: 0.12 },
@@ -92,72 +91,32 @@ function initializeScene(imageData) {
 
   function animateScene() {
     requestAnimationFrame(animateScene);
-
-    
     renderer.render(scene, camera);
   }
   animateScene();
 
   imageContainer.addEventListener('mousemove', (event) => {
-    easeFactor = 0.02;
     let rect = imageContainer.getBoundingClientRect();
-  
-    // GSAP para suavizar el movimiento del mouse
     gsap.to(shaderUniforms.u_mouse.value, {
       x: (event.clientX - rect.left) / rect.width,
       y: 1.0 - (event.clientY - rect.top) / rect.height,
-      duration: 0.3, // Duración de la animación para suavizar
+      duration: 0.3,
       ease: "power2.out"
     });
-  
     shaderUniforms.u_aberrationIntensity.value = 1.0;
   });
-  imageContainer.addEventListener('mouseenter', () => {
-    gsap.to(shaderUniforms.u_aberrationIntensity, {
-      value: 1.5,
-      duration: 0.8,
-      ease: "elastic.out(1, 0.3)"
-    });
-  });
-  
-  imageContainer.addEventListener('mouseleave', () => {
-    gsap.to(shaderUniforms.u_aberrationIntensity, {
-      value: 0.0,
-      duration: 0.5,
-      ease: "power2.out"
-    });
-  });
-
-  let mouseTarget = new THREE.Vector2();
-let mouseLerp = new THREE.Vector2();
-
-imageContainer.addEventListener('mousemove', (event) => {
-  let rect = imageContainer.getBoundingClientRect();
-  mouseTarget.x = (event.clientX - rect.left) / rect.width;
-  mouseTarget.y = 1.0 - (event.clientY - rect.top) / rect.height;
-});
-
-// Loop para interpolar constantemente la posición del mouse
-gsap.ticker.add(() => {
-  mouseLerp.lerp(mouseTarget, 0.1); // Lerp manual (10% de suavizado en cada frame)
-  shaderUniforms.u_mouse.value.set(mouseLerp.x, mouseLerp.y);
-});
 
   imageContainer.addEventListener('mouseleave', () => {
-    shaderUniforms.u_aberrationIntensity.value = 0.0;
-    easeFactor = 0.05;
-    targetMousePosition = { ...prevPosition };
-  });
-  imageContainer.addEventListener('mousemove', (event) => {
-    shaderUniforms.u_aberrationIntensity.value = 1.0;
-    let rect = imageContainer.getBoundingClientRect();
-    shaderUniforms.u_mouse.value.set(
-      (event.clientX - rect.left) / rect.width,
-      1.0 - (event.clientY - rect.top) / rect.height
-    );
+    gsap.to(shaderUniforms.u_aberrationIntensity, { value: 0.0, duration: 0.5, ease: "power2.out" });
   });
 }
 
-
-
 images.forEach(imageData => initializeScene(imageData));
+
+// Animación de carga
+
+gsap.timeline()
+  .to("[text-loading]", { opacity: 1,delay:0.3, y: -20, duration: 1, ease: "power2.out" })
+  .to("[text-loading]", { opacity: 0, y: 0, duration: 1, ease: "power2.in" })
+  .to(".courtain", { height: 0, stagger: 0.5, duration: 1, ease: "power2.inOut" })
+  .to(".loading-wrapper", { display: "none", duration: 0 });
