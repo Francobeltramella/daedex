@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "esbuild src/cans.js --bundle --outfile=dist/cans.js --format=esm && esbuild src/shirt.js --bundle --outfile=dist/shirt.js --format=esm && esbuild src/shaders.js --bundle --outfile=dist/shaders.js --format=esm && cp -r public/* dist/",
+    "build": "esbuild src/shaderScroll.js --bundle --outfile=dist/shaderScroll.js --format=esm && esbuild src/shaders.js --bundle --outfile=dist/shaders.js --format=esm && cp -r public/* dist/",
     "preview": "vite preview"
   },
   "devDependencies": {
