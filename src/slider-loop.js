@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import gsap from 'gsap';
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
 const images = [...document.querySelectorAll('.img-item')];
 const section3D = document.querySelector('[section-3d]');
