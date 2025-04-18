@@ -1,27 +1,23 @@
-// build.js (versión CommonJS)
-const esbuild = require('esbuild');
-const fs = require('fs-extra');
-const path = require('path');
-const glob = require('glob');
+// build.js — versión válida como ES Module
+import { build } from 'esbuild';
+import fs from 'fs-extra';
+import path from 'path';
+import glob from 'glob';
 
-const files = glob.sync('src/**/*.js');
+// glob.sync no necesita __dirname porque usamos rutas relativas
+const files = glob.sync('src/*.js');
 
-async function runBuild() {
-  for (const file of files) {
-    const filename = path.basename(file);
-    await esbuild.build({
-      entryPoints: [file],
-      outfile: `dist/${filename}`,
-      bundle: true,
-      format: 'esm',
-    });
-    console.log(`✅ Bundled: ${file}`);
-  }
-
-  await fs.copy('public', 'dist', { overwrite: true });
-  console.log('📁 Copied /public to /dist');
+for (const file of files) {
+  const filename = path.basename(file);
+  await build({
+    entryPoints: [file],
+    outfile: `dist/${filename}`,
+    bundle: true,
+    format: 'esm',
+  });
+  console.log(`✅ Bundled: ${file}`);
 }
 
-runBuild().catch((err) => {
-  console.error('❌ Build failed:', err);
-});
+// Copiar todo lo que hay en public/
+await fs.copy('public', 'dist', { overwrite: true });
+console.log('📁 Copied /public to /dist');
