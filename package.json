@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "esbuild src/shaderScroll.js --bundle --outfile=dist/shaderScroll.js --format=esm && esbuild src/shaders.js --bundle --outfile=dist/shaders.js --format=esm && cp -r public/* dist/",
+    "build": "esbuild public/robot_skull.glb --bundle --outfile=dist/robot_skull.glb --format=esm && esbuild src/slider-loop.js --bundle --outfile=dist/slider-loop.js --format=esm && esbuild src/shaderScroll.js --bundle --outfile=dist/shaderScroll.js --format=esm && esbuild src/shaders.js --bundle --outfile=dist/shaders.js --format=esm && cp -r public/* dist/",
     "preview": "vite preview"
   },
   "devDependencies": {
