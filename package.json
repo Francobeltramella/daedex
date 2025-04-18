@@ -9,12 +9,14 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "esbuild": "^0.24.0",
+    "esbuild": "^0.24.2",
     "vite": "^6.0.1"
   },
   "dependencies": {
     "dat.gui": "^0.7.9",
     "dotenv": "^16.4.7",
+    "fs-extra": "^11.3.0",
+    "glob": "^11.0.1",
     "gsap": "^3.12.5",
     "three": "^0.171.0"
   }

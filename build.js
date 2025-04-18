@@ -1,16 +1,15 @@
-// build.js
-import { build } from 'esbuild';
-import fs from 'fs-extra';
-import path from 'path';
-import glob from 'glob';
+// build.js (versión CommonJS)
+const esbuild = require('esbuild');
+const fs = require('fs-extra');
+const path = require('path');
+const glob = require('glob');
 
-// Buscar todos los JS en src/
 const files = glob.sync('src/**/*.js');
 
 async function runBuild() {
   for (const file of files) {
     const filename = path.basename(file);
-    await build({
+    await esbuild.build({
       entryPoints: [file],
       outfile: `dist/${filename}`,
       bundle: true,
@@ -19,7 +18,6 @@ async function runBuild() {
     console.log(`✅ Bundled: ${file}`);
   }
 
-  // Copiar public/ completo a dist/
   await fs.copy('public', 'dist', { overwrite: true });
   console.log('📁 Copied /public to /dist');
 }
