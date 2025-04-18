@@ -245,7 +245,7 @@ fontLoader.load('https://3dlive.netlify.app/Orbitron.json', (font) => {
     const textGeometry = new TextGeometry(textos[idx], {
       font,
       size: 25,
-      height: 10,
+      depth: 10,
       curveSegments: 20,
       bevelEnabled: true,
       bevelThickness: 10,
