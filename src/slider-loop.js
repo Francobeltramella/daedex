@@ -214,68 +214,6 @@ document.querySelectorAll('a[data-shader]').forEach(button => {
   });
 });
 
-// === Crear imágenes y textos ===
-fontLoader.load('https://3dlive.netlify.app/ORBITRON.json', (font) => {
-  images.forEach((img, idx) => {
-    const texture = loader.load(img.src);
-    const uniforms = {
-      u_texture: { value: texture },
-      u_time: { value: 0 },
-      u_radius: { value: 0.1 },
-    };
-
-    const material = new THREE.ShaderMaterial({
-      uniforms,
-      transparent: true,
-      vertexShader,
-      fragmentShader: fragmentShaders.liquid
-    });
-
-    const geometry = new THREE.PlaneGeometry(800, 500, 32, 32);
-    const plane = new THREE.Mesh(geometry, material);
-    plane.position.y = -(imageHeight + gap) * idx;
-    scene.add(plane);
-
-    const textos = [
-      "SPACE TO THINK",
-      "Mind on another planet",
-      "The universe within",
-      "Cosmic pause.",
-      "Dreamer in orbit"
-    ];
-    
-    const textGeometry = new TextGeometry(textos[idx], {
-      font,
-      size: 25,
-      height: 10,
-      curveSegments: 20,
-      bevelEnabled: true,
-      bevelThickness: 10,
-      bevelSize: 1,
-      bevelSegments: 5
-    });
-    
-
-    const textMaterial = new THREE.MeshStandardMaterial({
-      color: 0xffffff,
-      emissive: 0xffffff,
-      metalness: 0.5,
-      roughness: 0.6,
-      transparent: true,
-      opacity: 0
-    });
-
-    const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-    textMesh.position.set(0, plane.position.y - 400, 10);
-    scene.add(textMesh);
-
-    planeImages.push(plane);
-    textMeshes.push(textMesh);
-    uniformsArray.push(uniforms);
-
-    img.style.display = 'none';
-  });
-});
 
 
 
