@@ -215,7 +215,7 @@ document.querySelectorAll('a[data-shader]').forEach(button => {
 });
 
 // === Crear imágenes y textos ===
-fontLoader.load('https://3dlive.netlify.app/ORBITRON.json', (font) => {
+fontLoader.load('https://3dlive.netlify.app/Orbitron.json', (font) => {
   images.forEach((img, idx) => {
     const texture = loader.load(img.src);
     const uniforms = {
