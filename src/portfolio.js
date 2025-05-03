@@ -101,7 +101,7 @@ container.addEventListener('mousemove', (event) => {
 // Cargar modelo
 const loader = new GLTFLoader();
 loader.load(
-  "https://animation-3d-poc.netlify.app/portfolio.glb",
+  "https://3dlive.netlify.app/portfolio.glb",
   (gltf) => {
     glbModel = gltf.scene;
     scene.add(glbModel);
