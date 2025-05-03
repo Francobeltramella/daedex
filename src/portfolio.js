@@ -79,7 +79,7 @@ container.addEventListener('mousemove', (event) => {
         backgroundColor: "#000000",
         duration: 0.4,
       });
-      gsap.to(".main-h1", {
+      gsap.to(".hover-black", {
         color: "#ffffff",
         duration: 0.4,
       });
@@ -91,7 +91,7 @@ container.addEventListener('mousemove', (event) => {
         backgroundColor: "#ffffff",
         duration: 0.4,
       });
-      gsap.to(".main-h1", {
+      gsap.to(".hover-black", {
         color: "#000000",
         duration: 0.4,
       });
