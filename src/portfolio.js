@@ -35,6 +35,7 @@ scene.add(ambientLight);
 // Controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
+controls.enableZoom = false;
 
 // Cursor Light
 const cursorLight = new THREE.PointLight(0xffffff, 10, 600);
