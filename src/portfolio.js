@@ -79,11 +79,11 @@ container.addEventListener('mousemove', (event) => {
         backgroundColor: "#000000",
         duration: 0.4,
       });
-      gsap.to("no-hover", {
+      gsap.to(".no-hover", {
         opacity:0,
         duration: 0.4,
       });
-      gsap.to("hover", {
+      gsap.to(".hover", {
         opacity:1,
         duration: 0.4,
       });
@@ -100,11 +100,11 @@ container.addEventListener('mousemove', (event) => {
         duration: 0.4,
       });
 
-      gsap.to("no-hover", {
+      gsap.to(".no-hover", {
         opacity:1,
         duration: 0.4,
       });
-      gsap.to("hover", {
+      gsap.to(".hover", {
         opacity:0,
         duration: 0.4,
       });
