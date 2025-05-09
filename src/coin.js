@@ -57,7 +57,7 @@ const loader = new GLTFLoader();
 let model = null;
 
 loader.load(
-  "http://localhost:5174/static/coin.glb",
+  "https://coin3d.netlify.app/coin.glb",
   (gltf) => {
     model = gltf.scene;
 
