@@ -1,10 +1,6 @@
 import * as THREE from 'three';
-import { FontLoader } from 'tthree/addons/jsm/loaders/FontLoader.js';
-import { TextGeometry } from 'three/addons/jsm/geometries/TextGeometry.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import gsap from 'gsap';
-import { GUI } from 'dat.gui';
 
 const container = document.querySelector(".3d-element");
 
