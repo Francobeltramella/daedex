@@ -50,10 +50,13 @@ scene.add(hemiLight);
 function handleResize() {
     const width = container.clientWidth;
     const height = container.clientHeight;
+  
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
+  
+    updateModelScale(); // ✅ Escala correcta al redimensionar
   }
   window.addEventListener("resize", handleResize);
   handleResize();
