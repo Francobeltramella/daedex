@@ -47,6 +47,18 @@ scene.add(ambientLight);
 const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
 scene.add(hemiLight);
 
+function handleResize() {
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(window.devicePixelRatio);
+  }
+  window.addEventListener("resize", handleResize);
+  handleResize();
+  
+
 // Controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
@@ -106,15 +118,3 @@ const animate = () => {
 };
 
 animate();
-function handleResize() {
-    const width = container.clientWidth;
-    const height = container.clientHeight;
-  
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(window.devicePixelRatio);
-  }
-  
-  window.addEventListener("resize", handleResize);
-  handleResize(); // También lo llama al principio
