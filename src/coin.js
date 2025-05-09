@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-const container = document.querySelector(".3d-element");
+const container = document.querySelector(".coin-3d");
 
 // Scene
 const scene = new THREE.Scene();
