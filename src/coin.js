@@ -106,7 +106,6 @@ const animate = () => {
 };
 
 animate();
-
 function handleResize() {
     const width = container.clientWidth;
     const height = container.clientHeight;
@@ -114,7 +113,8 @@ function handleResize() {
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
+    renderer.setPixelRatio(window.devicePixelRatio);
   }
   
   window.addEventListener("resize", handleResize);
-  handleResize();
+  handleResize(); // También lo llama al principio
