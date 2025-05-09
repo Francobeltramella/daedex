@@ -50,6 +50,7 @@ scene.add(hemiLight);
 // Controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
+controls.enableZoom = false;
 
 // GLB Loader
 const loader = new GLTFLoader();
@@ -104,3 +105,15 @@ const animate = () => {
 };
 
 animate();
+
+function handleResize() {
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+  
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+  }
+  
+  window.addEventListener("resize", handleResize);
+  handleResize();
