@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "esbuild src/slider-loop.js --bundle --outfile=dist/slider-loop.js --format=esm && esbuild src/shaderScroll.js --bundle --outfile=dist/shaderScroll.js --format=esm && esbuild src/shaders.js --bundle --outfile=dist/shaders.js --format=esm && esbuild src/portfolio.js --bundle --outfile=dist/portfolio.js --format=esm && mkdir -p dist/assets && cp public/portfolio.glb dist/ && cp public/Orbitron.json dist/",
+    "build": "esbuild src/coin.js --bundle --outfile=dist/coin.js --format=esm && mkdir -p dist/assets && cp public/coin.glb dist/",
     "preview": "vite preview"
   },
   "devDependencies": {
