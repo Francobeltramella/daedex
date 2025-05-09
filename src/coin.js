@@ -57,7 +57,13 @@ function handleResize() {
   }
   window.addEventListener("resize", handleResize);
   handleResize();
-  
+
+
+  function updateModelScale() {
+    if (!model) return;
+    const isMobile = window.innerWidth < 768;
+    model.scale.setScalar(isMobile ? 0.5 : 1);
+  }
 
 // Controls
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -89,6 +95,8 @@ loader.load(
     });
 
     scene.add(model);
+    updateModelScale(); // ✅ Escala correcta al cargar
+
   },
   (xhr) => {
     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
