@@ -51,6 +51,7 @@ scene.add(hemiLight);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.enableZoom = false;
+controls.enablePan = false;
 
 // GLB Loader
 const loader = new GLTFLoader();
