@@ -1,11 +1,19 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 
 const container = document.querySelector(".coin-3d");
-
+let model = null;
 // Scene
+
 const scene = new THREE.Scene();
+
+// Load HDR environment map
+new RGBELoader().load('https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_03_1k.hdr', function(hdrMap) {
+  hdrMap.mapping = THREE.EquirectangularReflectionMapping;
+  scene.environment = hdrMap;
+});
 
 // Camera
 const camera = new THREE.PerspectiveCamera(
@@ -24,9 +32,12 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 container.appendChild(renderer.domElement);
 
+
+
+
 // Lights
-const light = new THREE.DirectionalLight(0xffffff, 2);
-light.position.set(10, 10, 10);
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(0, 0, 0);
 light.castShadow = true;
 light.shadow.mapSize.width = 2048;
 light.shadow.mapSize.height = 2048;
@@ -76,7 +87,7 @@ controls.enablePan = false;
 
 // GLB Loader
 const loader = new GLTFLoader();
-let model = null;
+
 
 loader.load(
   "https://coin3d.netlify.app/coin.glb",
@@ -90,9 +101,16 @@ loader.load(
         //child.receiveShadow = true;
 
         if (child.material) {
-          child.material.metalness = 1;
-          child.material.roughness = 0.5;
-          child.material.needsUpdate = true;
+          const material = child.material;
+
+          material.metalness = 1;
+          material.roughness = 0.2;
+          material.envMapIntensity = 1;
+        
+          // Agregá un ligero tinte blanco para reflejos
+          material.color = new THREE.Color(0xffffff);
+        
+          material.needsUpdate = true;
         }
       }
     });
