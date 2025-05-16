@@ -107,7 +107,6 @@ loader.load(
           material.roughness = 0.2;
           material.envMapIntensity = 1;
         
-          // Agregá un ligero tinte blanco para reflejos
           material.color = new THREE.Color(0xffffff);
         
           material.needsUpdate = true;
