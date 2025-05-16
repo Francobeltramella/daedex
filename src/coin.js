@@ -10,7 +10,7 @@ let model = null;
 const scene = new THREE.Scene();
 
 // Load HDR environment map
-new RGBELoader().load('https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_03_1k.hdr', function(hdrMap) {
+new RGBELoader().load('https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_04_1k.hdr', function(hdrMap) {
   hdrMap.mapping = THREE.EquirectangularReflectionMapping;
   scene.environment = hdrMap;
 });
@@ -25,38 +25,36 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(4, -2, 0);
 
 // Renderer
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+const renderer = new THREE.WebGLRenderer({
+  antialias: true,   // Bordes suaves
+  alpha: true,       // Transparencia de fondo
+  powerPreference: "high-performance", // GPU prioritaria
+  precision: "highp" // Precisión alta
+});
+
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // limitás para no reventar GPUs
 renderer.setSize(container.clientWidth, container.clientHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+renderer.outputEncoding = THREE.sRGBEncoding; // colores realistasrenderer.setSize(container.clientWidth, container.clientHeight);
 renderer.setClearColor(0x000000, 0);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
 container.appendChild(renderer.domElement);
 
 
-
-
-// Lights
-const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(0, 0, 0);
-light.castShadow = true;
-light.shadow.mapSize.width = 2048;
-light.shadow.mapSize.height = 2048;
-light.shadow.bias = -0.001;
-scene.add(light);
-
-const light2 = new THREE.DirectionalLight(0xffffff, 1);
-light2.position.set(-10, 10, -10);
-light2.castShadow = true;
-scene.add(light2);
-
-// const lightHelper = new THREE.DirectionalLightHelper(light, 1);
-// scene.add(lightHelper);
-
-const ambientLight = new THREE.AmbientLight(0x404040, 1);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
 scene.add(ambientLight);
 
-const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
-scene.add(hemiLight);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+directionalLight.position.set(5, 5, 5);
+scene.add(directionalLight);
+
+const rimLight = new THREE.DirectionalLight(0xffffff, 0.3);
+rimLight.position.set(-5, 3, -2);
+scene.add(rimLight);
 
 function handleResize() {
     const width = container.clientWidth;
@@ -103,11 +101,10 @@ loader.load(
         if (child.material) {
           const material = child.material;
 
+          material.color = new THREE.Color(0xcccccc);
           material.metalness = 1;
-          material.roughness = 0.2;
-          material.envMapIntensity = 1;
-        
-          material.color = new THREE.Color(0xffffff);
+          material.roughness = 0.4;
+          material.envMapIntensity = 1; // No HDR
         
           material.needsUpdate = true;
         }
