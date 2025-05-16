@@ -13,6 +13,10 @@ const scene = new THREE.Scene();
 new RGBELoader().load('https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_04_1k.hdr', function(hdrMap) {
   hdrMap.mapping = THREE.EquirectangularReflectionMapping;
   scene.environment = hdrMap;
+
+   // Cleanup
+   hdrMap.dispose();
+   pmremGenerator.dispose();
 });
 
 // Camera
