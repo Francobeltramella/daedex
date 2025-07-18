@@ -49,8 +49,11 @@ scene.add(hemiLight);
 
 // Controls
 const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableRotate = false;
+controls.enableZoom = false;
+controls.enablePan = false;
 controls.enableDamping = true;
-
+ 
 
 const light4 = new THREE.DirectionalLight(0xffffff, 2);
 light4.position.set(5, 5, 5);
