@@ -94,15 +94,15 @@ loader.load(
       });
 
        const grayDentor = obj.getObjectByName("Plane004");
-       if (grayDentor && grayDentor.isMesh) {
-         console.log("Material antes:", grayDentor.material);
-   
-         // Ajustar propiedades del material
-         grayDentor.material.metalness = 0.6;   // más metálico
-         grayDentor.material.roughness = 0.6;   // más pulido
-         grayDentor.material.color.set(0x515151); // blanco puro
-         grayDentor.material.needsUpdate = true;
-       }
+       const airDentor = obj.getObjectByName("Plane004_3");
+       [grayDentor, airDentor].forEach(mesh => {
+        if (mesh && mesh.isMesh) {
+          mesh.material.metalness = 0.6;
+          mesh.material.roughness = 0.6;
+          mesh.material.color.set(0x515151);
+        }
+      });
+    
     // (Opcional) centrar el modelo al origen para que orbite/escale lindo
     const box = new THREE.Box3().setFromObject(obj);
     const center = new THREE.Vector3();
