@@ -160,7 +160,7 @@ window.addEventListener("resize", () => {
 // Animation loop igual
 const animate = () => {
   requestAnimationFrame(animate);
-  controls.update();
+ // controls.update();
   renderer.render(scene, camera);
 };
 animate();
