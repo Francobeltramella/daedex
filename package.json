@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "esbuild src/daedex.js --bundle --outfile=dist/daedex.js --format=esm && mkdir -p dist/assets && cp public/d1.glb dist/",
+    "build": "esbuild src/daedex.js --bundle --outfile=dist/daedex.js --format=esm && mkdir -p dist/assets && cp public/d12.glb dist/ ",
     "preview": "vite preview"
   },
   "devDependencies": {
