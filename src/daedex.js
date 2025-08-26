@@ -8,7 +8,6 @@ const container = document.querySelector(".element");
 const scene = new THREE.Scene();
 scene.background = null;
 
-
 // Camera
 const camera = new THREE.PerspectiveCamera(
   45,
@@ -18,124 +17,134 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.set(5, 4 , 9);
 
-// Renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.setSize(container.clientWidth, container.clientHeight);
 container.appendChild(renderer.domElement);
 
-// Light
-const light = new THREE.DirectionalLight(0xffffff, 5);
-light.position.set(2, 2, 5);
-scene.add(light);
+// (opcional, rinde mejor en mobile)
+renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
 
-const ambientLight = new THREE.AmbientLight(0x404040); // Soft light
-scene.add(ambientLight);
+// ... (luces, controls, etc. igual)
 
+let model = null;
+let modelBaseScale = 1;
+let modelSize = new THREE.Vector3();
 
-// // Axes y grid para orientarte
-// scene.add(new THREE.AxesHelper(1));      // 1 unidad = 1 metro aprox (tu escala puede variar)
-// scene.add(new THREE.GridHelper(10, 10)); // grilla 10x10
+// ===== util para encuadrar el modelo al wrapper (auto-fit por scale) =====
+function fitObjectToView(obj, margin = 0.9) {
+  if (!obj) return;
 
-// Luz puntual violeta con alcance infinito
-const dirLight = new THREE.DirectionalLight(0x7777e7, 5);
-dirLight.position.set(-2, 3, 4);
-dirLight.target.position.set(0, 0, 0);
-scene.add(dirLight, dirLight.target);
+  // distancia desde la cámara al centro (tu modelo quedó centrado en el origen)
+  const distance = camera.position.length();
 
-// helper
-// const dirHelper = new THREE.DirectionalLightHelper(dirLight, 1);
-// scene.add(dirHelper);
+  // tamaño visible del frustum a esa distancia
+  const vFOV = THREE.MathUtils.degToRad(camera.fov);
+  const visibleHeight = 2 * Math.tan(vFOV / 2) * distance;
+  const visibleWidth  = visibleHeight * camera.aspect;
 
+  // escala que hace entrar el modelo en ancho y alto, con margen
+  const sx = (visibleWidth  * margin) / modelSize.x;
+  const sy = (visibleHeight * margin) / modelSize.y;
 
-// (Opcional) un AxesHelper para orientarte
-//scene.add(new THREE.AxesHelper(1));
+  const scale = Math.min(sx, sy);
 
-// Controls
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
+  // aplicamos sobre una escala base (por si normalizaste el tamaño)
+  obj.scale.setScalar(modelBaseScale * scale);
+}
 
 // Load GLB
 const loader = new GLTFLoader();
 loader.load(
-  "https://daedex.netlify.app/d1.glb", // Ruta a tu archivo GLB
+  "https://daedex.netlify.app/d1.glb",
   (gltf) => {
-    const obj = gltf.scene;               // o: gltf.scene.getObjectByName("NombreDelNodo")
+    const obj = gltf.scene;
     scene.add(obj);
+    model = obj;
+    obj.traverse((child) => {
+      if (child.isMesh) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0x7777e7,     // violeta metálico (cambiá a gusto)
+          metalness: 1.0,      // 1 = totalmente metálico
+          roughness: 0.2,      // 0 = espejo, 1 = mate
+          envMapIntensity: 1.0 // cuánto refleja el entorno
+        });
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
 
-    // (Opcional) centrar el modelo al origen para que orbite/escale lindo
+     // Buscar el mesh "white dentor"
+     const whiteDentor = obj.getObjectByName("white dentor");
+     if (whiteDentor && whiteDentor.isMesh) {
+       console.log("Material antes:", whiteDentor.material);
+ 
+       // Ajustar propiedades del material
+       whiteDentor.material.metalness = 1.0;   // más metálico
+       whiteDentor.material.roughness = 0.1;   // más pulido
+       whiteDentor.material.color.set(0xffffff); // blanco puro
+       whiteDentor.material.needsUpdate = true;
+     }
+    // centrar al origen para que el fit sea correcto
     const box = new THREE.Box3().setFromObject(obj);
     const center = new THREE.Vector3();
+    const size = new THREE.Vector3();
     box.getCenter(center);
+    box.getSize(size);
     obj.position.sub(center);
 
-      // Helper deg->rad
-      const degToRad = (deg) => deg * Math.PI / 180;
+    // guardamos tamaño original para cálculos posteriores
+    modelSize.copy(size);
 
-      // Estado inicial equivalente al tuyo
-      gsap.set(obj.position, { x: 0, y: -7 }); // estado inicial
-      gsap.defaults({ overwrite: "auto" });
-  
-      // Un único timeline con ScrollTrigger
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: "[step-1]",
-          start: "top top",
-          end: "center top",
-          scrub: true,           // o 3 si querés más inercia
-          // markers: true,
-          // pin: true,
-        }
-      });
-  
-      // Posición en 2 etapas
-      tl.to(obj.position, {
-        keyframes: [
-          { x: 0,   y: 0,  duration: 0.4, ease: "power2.in" },
-          { x: -6, y: -2,  duration: 0.6, ease: "power3.inOut" }
-        ]
-      }, 0)
-  
-      // Label para sincronizar rotación y escala
-      .addLabel("pose", 0.2)
-      .to(dirLight.position, {
-        x: -5,
-        y: 12,
-        z: 8,
-        ease: "power2.inOut"
-      }, 0)
+    // (opcional) normalizar tamaño base para que no sea gigantesco
+    // deja el modelo con su mayor dimensión ~1
+    modelBaseScale = 1 / Math.max(size.x, size.y, size.z);
+    obj.scale.setScalar(modelBaseScale);
 
-      .to(dirLight.target.position, {
-        x: 0,
-        y: 0,
-        z: 0,
-        ease: "power2.inOut"
-      }, 0)
-      // Rotación y escala (mismo inicio/duración/ease)
-      .to(obj.rotation, {
-        x: degToRad(70),
-        y: degToRad(10),
-        z: degToRad(-30),
-        duration: 0.6,
-        ease: "power3.inOut",
-        overwrite: false
-      }, "pose")
-      .to(light, { intensity: 2 }, 0)
-      .to(obj.scale, {
-        x: 1.5, y: 1.5, z: 1.5,      // ojo: 30 es MUY grande si tu GLB ya viene grande
-        duration: 0.6,
-        ease: "power3.inOut",
-        overwrite: false
-      }, "pose");
+    // === ajuste inicial al wrapper ===
+    fitObjectToView(obj, 0.9);
 
+    // tu animación tal cual
+    const degToRad = (deg) => deg * Math.PI / 180;
+    gsap.set(obj.position, { x: 0, y: -7 });
+    gsap.defaults({ overwrite: "auto" });
 
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: "[step-1]",
+        start: "top top",
+        end: "center top",
+        scrub: true,
+        // markers: true,
+      }
+    });
 
+    tl.to(obj.position, {
+      keyframes: [
+        { x: 0,   y: 0,  duration: 0.4, ease: "power2.in" },
+        { x: -6,  y: -2, duration: 0.6, ease: "power3.inOut" }
+      ]
+    }, 0)
+    .addLabel("pose", 0.2)
+    .to(dirLight.position, { x: -5, y: 12, z: 8, ease: "power2.inOut" }, 0)
+    .to(dirLight.target.position, { x: 0, y: 0, z: 0, ease: "power2.inOut" }, 0)
+    .to(obj.rotation, {
+      x: degToRad(70),
+      y: degToRad(10),
+      z: degToRad(-30),
+      duration: 0.6,
+      ease: "power3.inOut",
+      overwrite: false
+    }, "pose")
+    .to(obj.scale, {
+      // TIP: si querés que el fit “gane siempre”, quitá este tween de escala.
+      x: "+=0.3", y: "+=0.3", z: "+=0.3",
+      duration: 0.6,
+      ease: "power3.inOut",
+      overwrite: false
+    }, "pose");
   },
-  (xhr) => {
-    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-  },
-  (error) => {
-    console.error("An error happened", error);
-  }
+  (xhr) => console.log((xhr.loaded / xhr.total) * 100 + "% loaded"),
+  (error) => console.error("An error happened", error)
 );
 
 // Responsive
@@ -143,13 +152,15 @@ window.addEventListener("resize", () => {
   camera.aspect = container.clientWidth / container.clientHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(container.clientWidth, container.clientHeight);
+
+  // === re-encuadrar al nuevo tamaño del wrapper ===
+  fitObjectToView(model, 0.9);
 });
 
-// Animation loop
+// Animation loop igual
 const animate = () => {
   requestAnimationFrame(animate);
   controls.update();
   renderer.render(scene, camera);
 };
-
 animate();
