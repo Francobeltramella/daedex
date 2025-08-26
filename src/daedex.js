@@ -37,7 +37,7 @@ scene.add(ambientLight);
 // scene.add(new THREE.GridHelper(10, 10)); // grilla 10x10
 
 // Luz puntual violeta con alcance infinito
-const dirLight = new THREE.DirectionalLight(0x7777e7, 5);
+const dirLight = new THREE.DirectionalLight(0x7777e7, 2);
 dirLight.position.set(-2, 1, 4);
 dirLight.target.position.set(0, 0, 0);
 scene.add(dirLight, dirLight.target);
