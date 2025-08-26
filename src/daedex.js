@@ -180,7 +180,7 @@ function applyResponsiveScale() {
         ease: "power3.inOut",
         overwrite: false
       }, "pose")
-      .to(light, { intensity: 2 }, 0)
+      .to(light, { intensity: 4 }, 0)
       .to(obj.scale, {
         x: 1.5, y: 1.5, z: 1.5,      // ojo: 30 es MUY grande si tu GLB ya viene grande
         duration: 0.6,
