@@ -61,21 +61,21 @@ loader.load(
   (gltf) => {
     const obj = gltf.scene;               // o: gltf.scene.getObjectByName("NombreDelNodo")
     scene.add(obj);
-    obj.traverse((child) => {
-        if (child.isMesh) {
-          child.material = new THREE.MeshStandardMaterial({
-            color: 0x7777e7,     // violeta metálico (cambiá a gusto)
-            metalness: 1.0,      // 1 = totalmente metálico
-            roughness: 0.2,      // 0 = espejo, 1 = mate
-            envMapIntensity: 1.0 // cuánto refleja el entorno
-          });
-          child.castShadow = true;
-          child.receiveShadow = true;
-        }
-      });
+    // obj.traverse((child) => {
+    //     if (child.isMesh) {
+    //       child.material = new THREE.MeshStandardMaterial({
+    //         color: 0x7777e7,     // violeta metálico (cambiá a gusto)
+    //         metalness: 1.0,      // 1 = totalmente metálico
+    //         roughness: 0.2,      // 0 = espejo, 1 = mate
+    //         envMapIntensity: 1.0 // cuánto refleja el entorno
+    //       });
+    //       child.castShadow = true;
+    //       child.receiveShadow = true;
+    //     }
+    //   });
   
        // Buscar el mesh "white dentor"
-       const whiteDentor = obj.getObjectByName("white dentor");
+       const whiteDentor = obj.getObjectByName("white");
        if (whiteDentor && whiteDentor.isMesh) {
          console.log("Material antes:", whiteDentor.material);
    
