@@ -60,7 +60,7 @@ controls.enableDamping = true;
 // Load GLB
 const loader = new GLTFLoader();
 loader.load(
-  "https://daedex.netlify.app/d1.glb", // Ruta a tu archivo GLB
+  "https://daedex.netlify.app/d12.glb", // Ruta a tu archivo GLB
   (gltf) => {
     const obj = gltf.scene;               // o: gltf.scene.getObjectByName("NombreDelNodo")
     scene.add(obj);
