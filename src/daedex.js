@@ -25,7 +25,7 @@ container.appendChild(renderer.domElement);
 
 // Light
 const light = new THREE.DirectionalLight(0xffffff, 6);
-light.position.set(-2, -2, 10);
+light.position.set(-7, -7, 10);
 scene.add(light);
 
 const ambientLight = new THREE.AmbientLight(0x404040); // Soft light
@@ -122,7 +122,7 @@ loader.load(
           trigger: "[step-1]",
           start: "top top",
           end: "center top",
-          scrub: true,           // o 3 si querés más inercia
+          scrub: 2,           // o 3 si querés más inercia
           // markers: true,
           // pin: true,
         }
@@ -181,10 +181,14 @@ loader.load(
 
 // Responsive
 window.addEventListener("resize", () => {
-  camera.aspect = container.clientWidth / container.clientHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(container.clientWidth, container.clientHeight);
-});
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+  
+    renderer.setPixelRatio(
+      window.innerWidth < 600 ? 1 : Math.min(2, window.devicePixelRatio)
+    );
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  });
 
 // Animation loop
 const animate = () => {
