@@ -119,7 +119,7 @@ function applyResponsiveScale() {
         if (mesh && mesh.isMesh) {
           mesh.material.metalness = 1;
           mesh.material.roughness = 0.6;
-          mesh.material.color.set(0x515151);
+          mesh.material.color.set(0xe7e7e7e);
         }
       });
     
