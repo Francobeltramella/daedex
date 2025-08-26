@@ -85,6 +85,18 @@ loader.load(
          whiteDentor.material.color.set(0xffffff); // blanco puro
          whiteDentor.material.needsUpdate = true;
        }
+
+
+       const grayDentor = obj.getObjectByName("Bake_01");
+       if (grayDentor && grayDentor.isMesh) {
+         console.log("Material antes:", grayDentor.material);
+   
+         // Ajustar propiedades del material
+         grayDentor.material.metalness = 3.0;   // más metálico
+         grayDentor.material.roughness = 0.1;   // más pulido
+         grayDentor.material.color.set(0x777777); // blanco puro
+         grayDentor.material.needsUpdate = true;
+       }
     // (Opcional) centrar el modelo al origen para que orbite/escale lindo
     const box = new THREE.Box3().setFromObject(obj);
     const center = new THREE.Vector3();
