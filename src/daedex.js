@@ -24,8 +24,8 @@ renderer.setSize(container.clientWidth, container.clientHeight);
 container.appendChild(renderer.domElement);
 
 // Light
-const light = new THREE.DirectionalLight(0xffffff, 5);
-light.position.set(2, 2, 5);
+const light = new THREE.DirectionalLight(0xffffff, 6);
+light.position.set(-2, -2, 10);
 scene.add(light);
 
 const ambientLight = new THREE.AmbientLight(0x404040); // Soft light
@@ -38,7 +38,7 @@ scene.add(ambientLight);
 
 // Luz puntual violeta con alcance infinito
 const dirLight = new THREE.DirectionalLight(0x7777e7, 5);
-dirLight.position.set(-2, 3, 4);
+dirLight.position.set(-2, 1, 4);
 dirLight.target.position.set(0, 0, 0);
 scene.add(dirLight, dirLight.target);
 
@@ -75,26 +75,32 @@ loader.load(
     //   });
   
        // Buscar el mesh "white dentor"
-       const whiteDentor = obj.getObjectByName("white");
+       const whiteDentor = obj.getObjectByName("Plane004_2");
        if (whiteDentor && whiteDentor.isMesh) {
          console.log("Material antes:", whiteDentor.material);
    
          // Ajustar propiedades del material
-         whiteDentor.material.metalness = 1.0;   // más metálico
-         whiteDentor.material.roughness = 0.1;   // más pulido
+         whiteDentor.material.metalness = 0.4;   // más metálico
+         whiteDentor.material.roughness = 1.0;   // más pulido
          whiteDentor.material.color.set(0xffffff); // blanco puro
          whiteDentor.material.needsUpdate = true;
        }
+       obj.traverse((child) => {
+        if (child.isMesh) {
+          console.log("Mesh:", child.name, child.material);
+        } else {
+          console.log("Node:", child.name);
+        }
+      });
 
-
-       const grayDentor = obj.getObjectByName("Bake_01");
+       const grayDentor = obj.getObjectByName("Plane004");
        if (grayDentor && grayDentor.isMesh) {
          console.log("Material antes:", grayDentor.material);
    
          // Ajustar propiedades del material
-         grayDentor.material.metalness = 3.0;   // más metálico
-         grayDentor.material.roughness = 0.1;   // más pulido
-         grayDentor.material.color.set(0x777777); // blanco puro
+         grayDentor.material.metalness = 0.6;   // más metálico
+         grayDentor.material.roughness = 0.6;   // más pulido
+         grayDentor.material.color.set(0x515151); // blanco puro
          grayDentor.material.needsUpdate = true;
        }
     // (Opcional) centrar el modelo al origen para que orbite/escale lindo
