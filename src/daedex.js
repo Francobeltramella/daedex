@@ -76,6 +76,23 @@ loader.load(
     //       child.receiveShadow = true;
     //     }
     //   });
+
+    // --- Responsive simple ---
+function applyResponsiveScale() {
+    if (window.innerWidth < 600) {
+      obj.scale.set(0.6, 0.6, 0.6);   // mobile
+    } else if (window.innerWidth < 1024) {
+      obj.scale.set(0.8, 0.8, 0.8);   // tablet
+    } else {
+      obj.scale.set(1, 1, 1);         // desktop
+    }
+  }
+  
+  // primera pasada
+  applyResponsiveScale();
+  
+  // al cambiar tamaño
+  window.addEventListener("resize", applyResponsiveScale);
   
        // Buscar el mesh "white dentor"
        const whiteDentor = obj.getObjectByName("Plane004_2");
@@ -100,7 +117,7 @@ loader.load(
        const airDentor = obj.getObjectByName("Plane004_3");
        [grayDentor, airDentor].forEach(mesh => {
         if (mesh && mesh.isMesh) {
-          mesh.material.metalness = 0.6;
+          mesh.material.metalness = 1;
           mesh.material.roughness = 0.6;
           mesh.material.color.set(0x515151);
         }
