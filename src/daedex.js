@@ -138,7 +138,7 @@ function applyResponsiveScale() {
       tl.to(obj.position, {
         keyframes: [
           { x: 0,   y: 0,  duration: 0.5, ease: "power2.out" },
-          { x: -6, y: -4,  duration: 0.4, ease: "power3.in" }
+          { x: -6, y: -3,  duration: 0.4, ease: "power3.in" }
         ]
       }, 0)
   
