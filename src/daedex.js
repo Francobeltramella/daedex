@@ -64,19 +64,7 @@ loader.load(
   (gltf) => {
     const obj = gltf.scene;               // o: gltf.scene.getObjectByName("NombreDelNodo")
     scene.add(obj);
-    // obj.traverse((child) => {
-    //     if (child.isMesh) {
-    //       child.material = new THREE.MeshStandardMaterial({
-    //         color: 0x7777e7,     // violeta metálico (cambiá a gusto)
-    //         metalness: 1.0,      // 1 = totalmente metálico
-    //         roughness: 0.2,      // 0 = espejo, 1 = mate
-    //         envMapIntensity: 1.0 // cuánto refleja el entorno
-    //       });
-    //       child.castShadow = true;
-    //       child.receiveShadow = true;
-    //     }
-    //   });
-
+ 
     // --- Responsive simple ---
 function applyResponsiveScale() {
     if (window.innerWidth < 600) {
@@ -259,7 +247,7 @@ function initViewer(host){
   host.appendChild(renderer.domElement);
 
   const scene  = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(25, Math.max(1, r.width)/Math.max(1, r.height), 0.01, 1000);
+  const camera = new THREE.PerspectiveCamera(15, Math.max(1, r.width)/Math.max(1, r.height), 0.01, 1000);
   scene.add(new THREE.AmbientLight(0xffffff, 1));
   const dir = new THREE.DirectionalLight(0xffffff, 1); dir.position.set(3,5,7); scene.add(dir);
 
@@ -320,7 +308,7 @@ async function mountGLBInHost(host, url, zoom=1){
   // Estado inicial
   viewer.model.position.set(0,0,0);
   viewer.model.rotation.set(0,0,0);
-  viewer.model.scale.set(1,1,1);
+  //viewer.model.scale.set(1,1,1);
 
   // Encuadre y a renderizar
   frameAtOrigin(viewer.camera, size, zoom);
