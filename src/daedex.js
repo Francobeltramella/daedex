@@ -258,4 +258,75 @@ document.addEventListener("DOMContentLoaded", () => {
         renderer.render(scene, camera);
       })();
     });
+
+
+    const movements = {
+        "glb1": [
+          { rx: 0,   ry: -6, x: 0, duration: 1.2 },
+          { rx: 10,   ry: 10, x: 0, duration: 1.2 }
+        ],
+        "glb2": [
+          { rx: 90,  ry: 0,   y: 5, duration: 1.5 },
+          { rx: 0,   ry: 360, z: -5, duration: 1 }
+        ]
+      };
+    
+      function animateGLB(container, idx){
+        
+        if (!container || !container.__glb) {
+          console.warn("GLB todavía no cargado para", container);
+          return;
+        }
+      
+        const obj = container.__glb; 
+        if (!obj) return;
+    
+        const id = container.getAttribute("id"); // ej: "glb1"
+        const movs = movements[id] || [];
+        const m = movs[idx];
+        if (!m) return;
+    
+        gsap.to(obj.rotation, {
+          x: THREE.MathUtils.degToRad(m.rx || 0),
+          y: THREE.MathUtils.degToRad(m.ry || 0),
+          z: THREE.MathUtils.degToRad(m.rz || 0),
+          duration: m.duration || 1,
+          ease: "power2.out"
+        });
+    
+        gsap.to(obj.position, {
+          x: m.x || 0,
+          y: m.y || 0,
+          z: m.z || 0,
+          duration: m.duration || 1,
+          ease: "power2.out"
+        });
+      }
+    
+      gsap.utils.toArray("[steps-section]").forEach(section => {
+        const items = section.querySelectorAll("[item-step]");
+        const n = items.length;
+    
+        let prev = 0;
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: "+=" + (n * window.innerHeight),
+            scrub: 0.5,
+            onUpdate(self){
+              const idx = Math.min(n-1, Math.floor(self.progress * n));
+              if (idx !== prev) {
+                const glb = section.querySelector(".element-3d-steps");
+                animateGLB(glb, idx); // anima según el step
+                prev = idx;
+              }
+            }
+          }
+        });
+        tl.to({}, { duration: n });
+      });
+
+
+
   });
