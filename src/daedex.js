@@ -247,6 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const loader = new GLTFLoader();
       loader.load(url, (gltf) => {
         const objs = gltf.scene;
+        container.__glb = objs;
         scene.add(gltf.scene);
         objs.rotation.y = Math.PI / -6; // 45 grados en eje Y
         //objs.rotation.x = Math.PI / 6;
