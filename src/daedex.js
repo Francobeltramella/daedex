@@ -308,7 +308,7 @@ async function mountGLBInHost(host, url, zoom=4){
   // Estado inicial
   viewer.model.position.set(0,0,0);
   viewer.model.rotation.set(0,0,0);
-  viewer.model.scale.set(0.3,0.3,0.3);
+  viewer.model.scale.set(0.5,0.5,0.5);
 
   // Encuadre y a renderizar
   frameAtOrigin(viewer.camera, size, zoom);
