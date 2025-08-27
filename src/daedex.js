@@ -60,12 +60,11 @@ controls.enableDamping = true;
 // Load GLB
 const loader = new GLTFLoader();
 loader.load(
-  "https://daedex.netlify.app/d12.glb", // Ruta a tu archivo GLB
+  "https://daedex.netlify.app/d12.glb", 
   (gltf) => {
-    const obj = gltf.scene;               // o: gltf.scene.getObjectByName("NombreDelNodo")
+    const obj = gltf.scene;               
     scene.add(obj);
  
-    // --- Responsive simple ---
 function applyResponsiveScale() {
     if (window.innerWidth < 600) {
       obj.scale.set(0.6, 0.6, 0.6);   // mobile
@@ -87,7 +86,6 @@ function applyResponsiveScale() {
        if (whiteDentor && whiteDentor.isMesh) {
          console.log("Material antes:", whiteDentor.material);
    
-         // Ajustar propiedades del material
          whiteDentor.material.metalness = 0.4;   // más metálico
          whiteDentor.material.roughness = 1.0;   // más pulido
          whiteDentor.material.color.set(0xffffff); // blanco puro
@@ -130,7 +128,7 @@ function applyResponsiveScale() {
           trigger: "[step-1]",
           start: "top top",
           end: "center top",
-          scrub: 2,           // o 3 si querés más inercia
+          scrub: 2,          
           // markers: true,
           // pin: true,
         }
@@ -140,7 +138,7 @@ function applyResponsiveScale() {
       tl.to(obj.position, {
         keyframes: [
           { x: 0,   y: 0,  duration: 0.5, ease: "power2.out" },
-          { x: -6, y: -2,  duration: 0.4, ease: "power3.in" }
+          { x: -6, y: -4,  duration: 0.4, ease: "power3.in" }
         ]
       }, 0)
   
