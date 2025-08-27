@@ -220,7 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
       // escena / cámara / renderer
       const scene  = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(45, 0, 0.1, 100);
+      const camera = new THREE.PerspectiveCamera(35, 0, 0.1, 100);
       camera.position.set(0, -1, 15);
   
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -264,7 +264,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "glb1": [
         { rx: 0,    ry: -6,   x: 0, duration: 1.2 },  
         { rx: 10,   ry: 15,   x: 0, duration: 1.5 },  
-        { rx: -8,   ry: -12,  x: 0, duration: 1.5 },   
+        { rx: 8,   ry: -12,  x: 0, duration: 1.5 },   
         { rx: 5,    ry: 25,   x: 0, duration: 1.4 },  
         { rx: -12,  ry: 8,    x: 0, duration: 1.6 } 
       ],
