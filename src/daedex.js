@@ -286,7 +286,7 @@ function initViewer(host){
   return viewer;
 }
 
-async function mountGLBInHost(host, url, zoom=1){
+async function mountGLBInHost(host, url, zoom=0){
   const viewer = initViewer(host);
   viewer.zoom = zoom;
 
