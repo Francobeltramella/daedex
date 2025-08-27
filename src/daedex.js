@@ -259,7 +259,7 @@ function initViewer(host){
   host.appendChild(renderer.domElement);
 
   const scene  = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(45, Math.max(1, r.width)/Math.max(1, r.height), 0.01, 1000);
+  const camera = new THREE.PerspectiveCamera(25, Math.max(1, r.width)/Math.max(1, r.height), 0.01, 1000);
   scene.add(new THREE.AmbientLight(0xffffff, 1));
   const dir = new THREE.DirectionalLight(0xffffff, 1); dir.position.set(3,5,7); scene.add(dir);
 
