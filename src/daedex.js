@@ -220,7 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
       // escena / cámara / renderer
       const scene  = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(35, 0, 0.1, 100);
+      const camera = new THREE.PerspectiveCamera(55, 0, 0.1, 100);
       camera.position.set(0, -1, 15);
   
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
