@@ -263,6 +263,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const movements = {
       "glb1": [
         { rx: 0,   ry: -6, x: 0, duration: 1.2 },
+        { rx: 10,   ry: 10, x: 0, duration: 1.2 },
+        { rx: -10,   ry: -10, x: 0, duration: 1.2 },
+        { rx: 20,   ry: 20, x: 0, duration: 1.2 },
         { rx: 10,   ry: 10, x: 0, duration: 1.2 }
       ],
       "glb2": [
