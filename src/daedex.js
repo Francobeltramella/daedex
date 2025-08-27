@@ -151,7 +151,7 @@ function applyResponsiveScale() {
       // Posición en 2 etapas
       tl.to(obj.position, {
         keyframes: [
-          { x: 0,   y: 0,  duration: 0.3, ease: "power2.out" },
+          { x: 0,   y: 0,  duration: 0.5, ease: "power2.out" },
           { x: -6, y: -2,  duration: 0.4, ease: "power3.in" }
         ]
       }, 0)
