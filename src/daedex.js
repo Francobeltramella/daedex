@@ -25,7 +25,7 @@ container.appendChild(renderer.domElement);
 
 // Light
 const light = new THREE.DirectionalLight(0xffffff, 6);
-light.position.set(-7, -7, 10);
+light.position.set(20, 20, 20);
 scene.add(light);
 
 const ambientLight = new THREE.AmbientLight(0x404040); // Soft light
@@ -103,9 +103,9 @@ function applyResponsiveScale() {
        const airDentor = obj.getObjectByName("Plane004_3");
        [grayDentor, airDentor].forEach(mesh => {
         if (mesh && mesh.isMesh) {
-          mesh.material.metalness = 1;
-          mesh.material.roughness = 0.6;
-          mesh.material.color.set(0xe7e7e7e);
+            mesh.material.metalness = 0.2;
+            mesh.material.roughness = 1.5;
+            mesh.material.color.set(0xe7e7e7e);
         }
       });
     
