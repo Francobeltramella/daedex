@@ -249,8 +249,32 @@ document.addEventListener("DOMContentLoaded", () => {
         const objs = gltf.scene;
         scene.add(gltf.scene);
         container.__glb = objs;
-        objs.rotation.y = Math.PI / -6; // 45 grados en eje Y
-        //objs.rotation.x = Math.PI / 6;
+        objs.rotation.y = Math.PI / -6; 
+
+
+        const wireframeMesh = objs.getObjectByName("A_Unit_Wireframe");
+
+  if (wireframeMesh && wireframeMesh.isMesh) {
+    // Aseguramos que el material soporte transparencia
+    wireframeMesh.material.transparent = true;
+    wireframeMesh.material.opacity = 0; // arranca invisible
+
+    // Animación al llegar a [section-wireframe]
+    gsap.to(wireframeMesh.material, {
+      opacity: 1,
+      duration: 2,
+      ease: "power2.inOut",
+      scrollTrigger: {
+        trigger: "[section-wireframe]",
+        start: "top center", // puedes ajustar
+        toggleActions: "play none none reverse"
+      }
+    });
+  }
+
+
+
+
       });
   
       // loop
