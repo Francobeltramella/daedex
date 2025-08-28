@@ -299,10 +299,10 @@ document.addEventListener("DOMContentLoaded", () => {
         { rx: 5,    ry: 25,   x: 0, duration: 1.4 }      
     ],
     "glb3": [
-        { rx: 0,    ry: -6,   x: 0, z:-5, duration: 1.2 },  
-        { rx: -40,   ry: 15,   x: 0, z:-5, duration: 1.5 },  
-        { rx: 90,   ry: -12,  x: 0, z:-5, duration: 1.5 },   
-        { rx: 0,    ry: 0,   x: 0, z:-5, duration: 1.4 }      
+        { rx: 0,    ry: -6,   x: 0, z:-3, duration: 1.2 },  
+        { rx: -90,  ry: 0,   x: 0,y: -1, z:0, duration: 1.5 },
+        { rx: 60,   ry: 25,  x: 0,z:-3, duration: 1.5 },   
+        { rx: 0,    ry: 0,   x: 0,z:-3, duration: 1.2 }          
     ],
     "glb4": [
         { rx: 0,    ry: -6,   x: 0, duration: 1.2 },  
