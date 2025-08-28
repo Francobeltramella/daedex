@@ -266,7 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ease: "power2.inOut",
       scrollTrigger: {
         trigger: "[section-wireframe]",
-        start: "bottom center", // puedes ajustar
+        start: "bottom bottom", // puedes ajustar
         toggleActions: "play none none reverse"
       }
     });
