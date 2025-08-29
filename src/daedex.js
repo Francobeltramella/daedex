@@ -220,7 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
       // escena / cámara / renderer
       const scene  = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(55, 0, 0.1, 100);
+      const camera = new THREE.PerspectiveCamera(65, 0, 0.1, 100);
       camera.position.set(0, -1, 15);
   
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -287,7 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const movements = {
       "glb1": [
         { rx: 0,    ry: -6,   x: 0, duration: 1.2 },  
-        { rx: -90,   ry: 0,   x: 0, z:2, duration: 1.5 },  
+        { rx: -90,   ry: 0,   x: 0, z:1, duration: 1.5 },  
         { rx: 8,   ry: -12,  x: 0, duration: 1.5 },   
         { rx: 70,    ry: 25,   x: 0, duration: 1.4 },  
         { rx: 0,  ry: 0,    x: 0, duration: 1.6 } 
@@ -299,14 +299,14 @@ document.addEventListener("DOMContentLoaded", () => {
         { rx: 0,    ry: 0,   x: 0, duration: 1.4 }      
     ],
     "glb3": [
-        { rx: 0,    ry: -6,   x: 0, z:-3, duration: 1.2 },  
-        { rx: 90,  ry: 0,   x: 0,y: -1, z:0, duration: 1.5 },
-        { rx: 60,   ry: 25,  x: 0,z:-3, duration: 1.5 },   
-        { rx: 0,    ry: 0,   x: 0,z:-3, duration: 1.2 }          
+        { rx: 0,    ry: -6,   x: 0,  duration: 1.2 },  
+        { rx: 90,  ry: 0,   x: 0,y: -1,  duration: 1.5 },
+        { rx: 60,   ry: 25,  x: 0, duration: 1.5 },   
+        { rx: 0,    ry: 0,   x: 0, duration: 1.2 }          
     ],
     "glb4": [
         { rx: 0,    ry: -6,   x: 0, duration: 1.2 },  
-        { rx: -90,  ry: 0,   x: 0,y: -1, z:2, duration: 1.5 },
+        { rx: -90,  ry: 0,   x: 0,y: -1, z:1, duration: 1.5 },
         { rx: 60,   ry: 25,  x: 0, duration: 1.5 },   
         { rx: 0,    ry: 0,   x: 0, duration: 1.2 }      
     ]
