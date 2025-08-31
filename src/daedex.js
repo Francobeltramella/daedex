@@ -255,28 +255,46 @@ document.addEventListener("DOMContentLoaded", () => {
         const wireframeMesh = objs.getObjectByName("A_Unit_Wireframe");  
         const ObjMesh       = objs.getObjectByName("A_Unit");
 
-if (wireframeMesh?.isMesh && ObjMesh) {
-  wireframeMesh.material.transparent = true;
-  wireframeMesh.material.opacity = 0;
-
-  gsap.timeline({
-    scrollTrigger: {
-      trigger: "[section-wireframe]",
-      start: "bottom bottom",
-      toggleActions: "play none none reverse"
-    }
-  })
-  .to(wireframeMesh.material, {
-    opacity: 1,
-    duration: 2,
-    ease: "power2.inOut"
-  }, 0)
-  .to(ObjMesh, {
-    duration: 2, // sin animación suave, solo switch
-    onStart: () => ObjMesh.visible = false,
-    onReverseComplete: () => ObjMesh.visible = true
-  }, 0);
-}
+        if (wireframeMesh?.isMesh && ObjMesh) {
+          // Wireframe arranca invisible
+          wireframeMesh.material.transparent = true;
+          wireframeMesh.material.opacity = 0;
+        
+          // Prepara todos los materiales del ObjMesh para soportar transparencia
+          ObjMesh.traverse(child => {
+            if (child.isMesh && child.material) {
+              child.material.transparent = true;
+              child.material.opacity = 1; // arranca visible
+            }
+          });
+        
+          // Animación con timeline sincronizado
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: "[section-wireframe]",
+              start: "bottom bottom",
+              toggleActions: "play none none reverse"
+            }
+          });
+        
+          // Wireframe entra
+          tl.to(wireframeMesh.material, {
+            opacity: 1,
+            duration: 2,
+            ease: "power2.inOut"
+          }, 0);
+        
+          // ObjMesh se desvanece
+          ObjMesh.traverse(child => {
+            if (child.isMesh && child.material) {
+              tl.to(child.material, {
+                opacity: 0,
+                duration: 2,
+                ease: "power2.inOut"
+              }, 0); // mismo tiempo, crossfade
+            }
+          });
+        }
 
 
 
