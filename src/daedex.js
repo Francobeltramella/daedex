@@ -81,33 +81,24 @@ function applyResponsiveScale() {
   // al cambiar tamaño
   window.addEventListener("resize", applyResponsiveScale);
   
-       // Buscar el mesh "white dentor"
-       const whiteDentor = obj.getObjectByName("Plane004_2");
-       if (whiteDentor && whiteDentor.isMesh) {
-         console.log("Material antes:", whiteDentor.material);
-   
-         whiteDentor.material.metalness = 0.4;   // más metálico
-         whiteDentor.material.roughness = 1.0;   // más pulido
-         whiteDentor.material.color.set(0xffffff); // blanco puro
-         whiteDentor.material.needsUpdate = true;
-       }
-       obj.traverse((child) => {
-        if (child.isMesh) {
-          console.log("Mesh:", child.name, child.material);
-        } else {
-          console.log("Node:", child.name);
-        }
-      });
-
-       const grayDentor = obj.getObjectByName("Plane004");
-       const airDentor = obj.getObjectByName("Plane004_3");
-       [grayDentor, airDentor].forEach(mesh => {
-        if (mesh && mesh.isMesh) {
-            mesh.material.metalness = 0.2;
-            mesh.material.roughness = 1.5;
-            mesh.material.color.set(0xe7e7e7e);
-        }
-      });
+  const whiteDentor = obj.getObjectByName("Plane004_2");
+  if (whiteDentor && whiteDentor.isMesh) {
+    whiteDentor.material.metalness = 1.0;     // máximo metálico
+    whiteDentor.material.roughness = 0.1;     // superficie más pulida
+    whiteDentor.material.color.set(0xffffff);
+    whiteDentor.material.needsUpdate = true;
+  }
+  
+  const grayDentor = obj.getObjectByName("Plane004");
+  const airDentor = obj.getObjectByName("Plane004_3");
+  [grayDentor, airDentor].forEach(mesh => {
+    if (mesh && mesh.isMesh) {
+      mesh.material.metalness = 0.8;          // bastante metálico
+      mesh.material.roughness = 0.25;         // un poco más satinado
+      mesh.material.color.set(0xe7e7e7);      // corregido (6 dígitos hex)
+      mesh.material.needsUpdate = true;
+    }
+  });
     
     // (Opcional) centrar el modelo al origen para que orbite/escale lindo
     const box = new THREE.Box3().setFromObject(obj);
