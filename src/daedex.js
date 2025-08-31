@@ -252,25 +252,37 @@ document.addEventListener("DOMContentLoaded", () => {
         objs.rotation.y = Math.PI / -6; 
 
 
-        const wireframeMesh = objs.getObjectByName("A_Unit_Wireframe");
+        const wireframeMesh = objs.getObjectByName("A_Unit_Wireframe");  
+        const ObjMesh = objs.getObjectByName("A_Unit");
 
-  if (wireframeMesh && wireframeMesh.isMesh) {
-    // Aseguramos que el material soporte transparencia
-    wireframeMesh.material.transparent = true;
-    wireframeMesh.material.opacity = 0; // arranca invisible
-
-    // Animación al llegar a [section-wireframe]
-    gsap.to(wireframeMesh.material, {
-      opacity: 1,
-      duration: 2,
-      ease: "power2.inOut",
-      scrollTrigger: {
-        trigger: "[section-wireframe]",
-        start: "bottom bottom", // puedes ajustar
-        toggleActions: "play none none reverse"
-      }
-    });
-  }
+        if (wireframeMesh?.isMesh && ObjMesh?.isMesh) {
+          // habilitamos transparencia en ambos
+          wireframeMesh.material.transparent = true;
+          ObjMesh.material.transparent = true;
+        
+          // estados iniciales
+          wireframeMesh.material.opacity = 0; // arranca invisible
+          ObjMesh.material.opacity = 1;       // arranca visible
+        
+          // timeline para sincronizar
+          gsap.timeline({
+            scrollTrigger: {
+              trigger: "[section-wireframe]",
+              start: "bottom bottom",
+              toggleActions: "play none none reverse"
+            }
+          })
+          .to(wireframeMesh.material, {
+            opacity: 1,
+            duration: 2,
+            ease: "power2.inOut"
+          }, 0) // <- arranca en paralelo
+          .to(ObjMesh.material, {
+            opacity: 0,
+            duration: 2,
+            ease: "power2.inOut"
+          }, 0); // <- arranca al mismo tiempo
+        }
 
 
 
