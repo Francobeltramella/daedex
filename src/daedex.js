@@ -272,7 +272,7 @@ if (wireframeMesh?.isMesh && ObjMesh) {
     ease: "power2.inOut"
   }, 0)
   .to(ObjMesh, {
-    duration: 0.1, // sin animación suave, solo switch
+    duration: 2, // sin animación suave, solo switch
     onStart: () => ObjMesh.visible = false,
     onReverseComplete: () => ObjMesh.visible = true
   }, 0);
