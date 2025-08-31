@@ -146,7 +146,7 @@ function applyResponsiveScale() {
       .addLabel("pose", 0.2)
       .to(dirLight.position, {
         x: -5,
-        y: 12,
+        y: 15,
         z: 8,
         ease: "power2.inOut"
       }, 0)
@@ -168,7 +168,7 @@ function applyResponsiveScale() {
       }, "pose")
       .to(light, { intensity: 4 }, 0)
       .to(obj.scale, {
-        x: 1.2, y: 1.2, z: 1.2,      // ojo: 30 es MUY grande si tu GLB ya viene grande
+        x: 1.3, y: 1.3, z: 1.3,      // ojo: 30 es MUY grande si tu GLB ya viene grande
         duration: 0.6,
         ease: "power3.inOut",
         overwrite: false
