@@ -254,8 +254,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const wireframeMesh = objs.getObjectByName("A_Unit_Wireframe");  
         const ObjMesh = objs.getObjectByName("A_Unit");
-
-        if (wireframeMesh?.isMesh && ObjMesh?.isMesh) {
+        console.log(ObjMesh);
+        if (wireframeMesh?.isMesh ) {
           // habilitamos transparencia en ambos
           wireframeMesh.material.transparent = true;
           ObjMesh.material.transparent = true;
