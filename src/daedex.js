@@ -168,13 +168,13 @@ function applyResponsiveScale() {
       }, "pose")
       .to(light, { intensity: 4 }, 0)
       .to(obj.scale, {
-        x: 1.5, y: 1.5, z: 1.5,      // ojo: 30 es MUY grande si tu GLB ya viene grande
+        x: 1.2, y: 1.2, z: 1.2,      // ojo: 30 es MUY grande si tu GLB ya viene grande
         duration: 0.6,
         ease: "power3.inOut",
         overwrite: false
       }, "pose");
 
-
+ß
 
   },
   (xhr) => {
