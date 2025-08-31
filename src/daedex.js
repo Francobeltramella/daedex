@@ -174,7 +174,7 @@ function applyResponsiveScale() {
         overwrite: false
       }, "pose");
 
-ß
+
 
   },
   (xhr) => {
