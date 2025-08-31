@@ -146,7 +146,7 @@ function applyResponsiveScale() {
       .addLabel("pose", 0.2)
       .to(dirLight.position, {
         x: -5,
-        y: 15,
+        y: 25,
         z: 8,
         ease: "power2.inOut"
       }, 0)
