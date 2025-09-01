@@ -184,15 +184,15 @@ loader.load(
 );
 
 // Responsive
-window.addEventListener("resize", () => {
-    camera.aspect = container.clientWidth / container.clientHeight;
-    camera.updateProjectionMatrix();
+// window.addEventListener("resize", () => {
+//     camera.aspect = container.clientWidth / container.clientHeight;
+//     camera.updateProjectionMatrix();
   
-    renderer.setPixelRatio(
-      window.innerWidth < 600 ? 1 : Math.min(2, window.devicePixelRatio)
-    );
-    renderer.setSize(container.clientWidth, container.clientHeight);
-  });
+//     renderer.setPixelRatio(
+//       window.innerWidth < 600 ? 1 : Math.min(2, window.devicePixelRatio)
+//     );
+//     renderer.setSize(container.clientWidth, container.clientHeight);
+//   });
 
 // Animation loop
 const animate = () => {
