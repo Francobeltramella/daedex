@@ -3,13 +3,11 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const container = document.querySelector(".element");
-if (!container) {
-  throw new Error('No se encontró .element');
-}
 
 // Scene
 const scene = new THREE.Scene();
 scene.background = null;
+
 
 // Camera
 const camera = new THREE.PerspectiveCamera(
@@ -21,147 +19,145 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(5, 4 , 9);
 
 // Renderer
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
-const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-const DPR_CAP = isMobile ? 1 : Math.min(1.5, window.devicePixelRatio || 1);   // ← cap DPR
-renderer.setPixelRatio(DPR_CAP);
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.setSize(container.clientWidth, container.clientHeight);
-renderer.outputColorSpace = THREE.SRGBColorSpace; // colores correctos
 container.appendChild(renderer.domElement);
 
-// Lights
+// Light
 const light = new THREE.DirectionalLight(0xffffff, 6);
 light.position.set(20, 20, 20);
 scene.add(light);
 
-const ambientLight = new THREE.AmbientLight(0x404040, 1);
+const ambientLight = new THREE.AmbientLight(0x404040); // Soft light
 scene.add(ambientLight);
 
-// Luz direccional violeta
+
+// // Axes y grid para orientarte
+// scene.add(new THREE.AxesHelper(1));      // 1 unidad = 1 metro aprox (tu escala puede variar)
+// scene.add(new THREE.GridHelper(10, 10)); // grilla 10x10
+
+// Luz puntual violeta con alcance infinito
 const dirLight = new THREE.DirectionalLight(0x7777e7, 1);
 dirLight.position.set(-2, -5, 4);
 dirLight.target.position.set(0, 0, 0);
 scene.add(dirLight, dirLight.target);
 
+// helper
+// const dirHelper = new THREE.DirectionalLightHelper(dirLight, 1);
+// scene.add(dirHelper);
+
+
+// (Opcional) un AxesHelper para orientarte
+//scene.add(new THREE.AxesHelper(1));
+
 // Controls
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.08;
-
-// Activar/desactivar por interacción para ahorrar CPU
-controls.enabled = false;
-renderer.domElement.addEventListener("pointerdown", () => (controls.enabled = true), { passive: true });
-window.addEventListener("pointerup", () => (controls.enabled = false), { passive: true });
-
-// (Opcional) registro defensivo GSAP/ScrollTrigger
-if (window.gsap && window.ScrollTrigger) {
-  gsap.registerPlugin(ScrollTrigger);
-  ScrollTrigger.config({ ignoreMobileResize: true });
-}
+// 6) OrbitControls un poco más “pesado” = menos frame-churn
+//controls.enableDamping = true;
+//controls.dampingFactor = 0.08; // si tiembla, subí a 0.12
+//controls.enableDamping = true;
 
 // Load GLB
 const loader = new GLTFLoader();
 loader.load(
-  "https://daedex.netlify.app/d12.glb",
+  "https://daedex.netlify.app/d12.glb", 
   (gltf) => {
-    const obj = gltf.scene;
+    const obj = gltf.scene;               
     scene.add(obj);
+ 
+function applyResponsiveScale() {
+    if (window.innerWidth < 600) {
+      obj.scale.set(0.6, 0.6, 0.6);   // mobile
+    } else if (window.innerWidth < 1024) {
+      obj.scale.set(0.8, 0.8, 0.8);   // tablet
+    } else {
+      obj.scale.set(1, 1, 1);         // desktop
+    }
+  }
+  
+  // primera pasada
+  applyResponsiveScale();
+  
+  // al cambiar tamaño
+  window.addEventListener("resize", applyResponsiveScale);
+  
+       // Buscar el mesh "white dentor"
+       const whiteDentor = obj.getObjectByName("Plane004_2");
+       if (whiteDentor && whiteDentor.isMesh) {
+         console.log("Material antes:", whiteDentor.material);
+   
+         whiteDentor.material.metalness = 0.4;   // más metálico
+         whiteDentor.material.roughness = 1.0;   // más pulido
+         whiteDentor.material.color.set(0xffffff); // blanco puro
+         whiteDentor.material.needsUpdate = true;
+       }
+       obj.traverse((child) => {
+        if (child.isMesh) {
+          console.log("Mesh:", child.name, child.material);
+        } else {
+          console.log("Node:", child.name);
+        }
+      });
 
-    // Centrar al origen para orbitar/escala lindos
+       const grayDentor = obj.getObjectByName("Plane004");
+       const airDentor = obj.getObjectByName("Plane004_3");
+       [grayDentor, airDentor].forEach(mesh => {
+        if (mesh && mesh.isMesh) {
+            mesh.material.metalness = 0.2;
+            mesh.material.roughness = 1.5;
+            mesh.material.color.set(0xe7e7e7e);
+        }
+      });
+    
+    // (Opcional) centrar el modelo al origen para que orbite/escale lindo
     const box = new THREE.Box3().setFromObject(obj);
     const center = new THREE.Vector3();
     box.getCenter(center);
     obj.position.sub(center);
 
-    // —— Escala responsiva basada en ancho del container
-    function applyResponsiveScale() {
-      const cw = container.clientWidth;
-      if (cw < 600) {
-        obj.scale.set(0.6, 0.6, 0.6);
-      } else if (cw < 1024) {
-        obj.scale.set(0.8, 0.8, 0.8);
-      } else {
-        obj.scale.set(1, 1, 1);
-      }
-    }
+      // Helper deg->rad
+      const degToRad = (deg) => deg * Math.PI / 180;
 
-    // Debounce de resize/orientation
-    let resizeTO;
-    function handleResize() {
-      clearTimeout(resizeTO);
-      resizeTO = setTimeout(() => {
-        const w = container.clientWidth;
-        const h = container.clientHeight;
-
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-
-        // mantener el mismo cap que al iniciar
-        renderer.setPixelRatio(DPR_CAP);
-        renderer.setSize(w, h);
-
-        // escala GLB según viewport real del container
-        applyResponsiveScale();
-
-        // render inmediato
-        renderOnce();
-
-        // si usás ScrollTrigger, refrescar (opcional)
-        if (window.ScrollTrigger) ScrollTrigger.refresh();
-      }, 120);
-    }
-    window.addEventListener("resize", handleResize);
-    window.addEventListener("orientationchange", handleResize);
-
-    // Primera pasada
-    applyResponsiveScale();
-    handleResize();
-
-    // ====== Material tweaks ======
-    const whiteDentor = obj.getObjectByName("Plane004_2");
-    if (whiteDentor && whiteDentor.isMesh) {
-      whiteDentor.material.metalness = 0.4;
-      whiteDentor.material.roughness = 1.0;  // clamp 0..1
-      whiteDentor.material.color.set(0xffffff);
-      whiteDentor.material.needsUpdate = true;
-    }
-
-    const grayDentor = obj.getObjectByName("Plane004");
-    const airDentor  = obj.getObjectByName("Plane004_3");
-    [grayDentor, airDentor].forEach(mesh => {
-      if (mesh && mesh.isMesh) {
-        mesh.material.metalness = 0.2;
-        mesh.material.roughness = 1.0;      // antes 1.5
-        mesh.material.color.set(0xe7e7e7);  // corregido
-      }
-    });
-
-    // ====== Animación con GSAP/ScrollTrigger (si existen) ======
-    const degToRad = (deg) => deg * Math.PI / 180;
-
-    if (window.gsap) {
-      gsap.set(obj.position, { x: 0, y: -7 });
+      // Estado inicial equivalente al tuyo
+      gsap.set(obj.position, { x: 0, y: -7 }); // estado inicial
       gsap.defaults({ overwrite: "auto" });
-
+  
+      // Un único timeline con ScrollTrigger
       const tl = gsap.timeline({
-        scrollTrigger: window.ScrollTrigger ? {
+        scrollTrigger: {
           trigger: "[step-1]",
           start: "top top",
           end: "center top",
-          scrub: 2,
+          scrub: 2,          
           // markers: true,
-        } : undefined
+          // pin: true,
+        }
       });
-
+  
+      // Posición en 2 etapas
       tl.to(obj.position, {
         keyframes: [
           { x: 0,   y: 0,  duration: 0.5, ease: "power2.out" },
-          { x: -6,  y: -3, duration: 0.4, ease: "power3.in" }
+          { x: -6, y: -3,  duration: 0.4, ease: "power3.in" }
         ]
       }, 0)
+  
+      // Label para sincronizar rotación y escala
       .addLabel("pose", 0.2)
-      .to(dirLight.position, { x: -5, y: 12, z: 8, ease: "power2.inOut" }, 0)
-      .to(dirLight.target.position, { x: 0, y: 0, z: 0, ease: "power2.inOut" }, 0)
+      .to(dirLight.position, {
+        x: -5,
+        y: 12,
+        z: 8,
+        ease: "power2.inOut"
+      }, 0)
+
+      .to(dirLight.target.position, {
+        x: 0,
+        y: 0,
+        z: 0,
+        ease: "power2.inOut"
+      }, 0)
+      // Rotación y escala (mismo inicio/duración/ease)
       .to(obj.rotation, {
         x: degToRad(70),
         y: degToRad(10),
@@ -172,12 +168,14 @@ loader.load(
       }, "pose")
       .to(light, { intensity: 4 }, 0)
       .to(obj.scale, {
-        x: 1.3, y: 1.3, z: 1.3,
+        x: 1.3, y: 1.3, z: 1.3,      // ojo: 30 es MUY grande si tu GLB ya viene grande
         duration: 0.6,
         ease: "power3.inOut",
         overwrite: false
       }, "pose");
-    }
+
+
+
   },
   (xhr) => {
     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
@@ -187,28 +185,26 @@ loader.load(
   }
 );
 
-// Render loop ligero (cap ~45fps) + render on demand
-let last = 0;
-function renderOnce() {
-  renderer.render(scene, camera);
-}
+// Responsive
+window.addEventListener("resize", () => {
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+  
+    renderer.setPixelRatio(
+      window.innerWidth < 600 ? 1 : Math.min(2, window.devicePixelRatio)
+    );
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  });
 
-function animate(ts = 0) {
+// Animation loop
+const animate = () => {
   requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+};
 
-  // limitar a ~45 fps (22ms)
-  if (ts - last < 22) return;
-  last = ts;
-
-  if (controls.enabled) controls.update(); // sólo si el usuario está interactuando
-  renderOnce();
-}
 animate();
 
-// Si hay GSAP, render inmediato cuando cambian timelines
-if (window.gsap) {
-  gsap.ticker.add(renderOnce);
-}
 
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".element-3d-steps[data-3d-src]").forEach((container) => {
