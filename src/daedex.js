@@ -72,21 +72,29 @@ loader.load(
     const obj = gltf.scene;               
     scene.add(obj);
  
-function applyResponsiveScale() {
-    if (window.innerWidth < 600) {
-      obj.scale.set(0.6, 0.6, 0.6);   // mobile
-    } else if (window.innerWidth < 1024) {
-      obj.scale.set(0.8, 0.8, 0.8);   // tablet
-    } else {
-      obj.scale.set(1, 1, 1);         // desktop
+    let resizeTO;
+    function handleResize() {
+      // evitar ‘thrash’ de resize en mobile
+      clearTimeout(resizeTO);
+      resizeTO = setTimeout(() => {
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+    
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+    
+        // mantener el mismo cap que al iniciar
+        renderer.setPixelRatio(isMobile ? 1 : Math.min(1.5, window.devicePixelRatio || 1));
+        renderer.setSize(w, h);
+    
+        // si escalás el GLB por viewport, hacelo acá también:
+        applyResponsiveScale?.();
+        // forzá un render inmediato
+        renderOnce();
+      }, 120);
     }
-  }
-  
-  // primera pasada
-  applyResponsiveScale();
-  
-  // al cambiar tamaño
-  window.addEventListener("resize", applyResponsiveScale);
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("orientationchange", handleResize);
   
        // Buscar el mesh "white dentor"
        const whiteDentor = obj.getObjectByName("Plane004_2");
