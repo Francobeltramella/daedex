@@ -125,7 +125,7 @@ loader.load(
           trigger: "[step-1]",
           start: "top top",
           end: "center top",
-          scrub: true,          
+          scrub: 2,          
           invalidateOnRefresh:true,
           // markers: true,
           // pin: true,
