@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
 const container = document.querySelector(".element");
 
@@ -57,8 +58,16 @@ const controls = new OrbitControls(camera, renderer.domElement);
 //controls.dampingFactor = 0.08; // si tiembla, subí a 0.12
 //controls.enableDamping = true;
 
-// Load GLB
+// Load GLB 
+
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/'); // Ruta CDN oficial
+// O si tenés los archivos localmente:
+// dracoLoader.setDecoderPath('/path/to/draco/');
+
 const loader = new GLTFLoader();
+loader.setDRACOLoader(dracoLoader);
+
 loader.load(
   "https://daedex.netlify.app/m12r.glb", 
   (gltf) => {
