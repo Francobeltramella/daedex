@@ -233,7 +233,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // resize simple
       function resize(){
         const w = Math.max(1, container.clientWidth);
-        const h = Math.max(1, container.clientHeight || 400);
+        const h = Math.max(1, container.clientHeight || 500);
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
         renderer.setSize(w, h, false);
