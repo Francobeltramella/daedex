@@ -56,10 +56,13 @@ scene.add(dirLight, dirLight.target);
 
 // Controls
 const controls = new OrbitControls(camera, renderer.domElement);
-// 6) OrbitControls un poco más “pesado” = menos frame-churn
 controls.enableDamping = true;
-controls.dampingFactor = 0.08; // si tiembla, subí a 0.12
-controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+
+// Activá/desactivá segun interacción para ahorrar CPU
+controls.enabled = false;
+renderer.domElement.addEventListener("pointerdown", () => (controls.enabled = true));
+window.addEventListener("pointerup", () => (controls.enabled = false));
 
 // Load GLB
 const loader = new GLTFLoader();
