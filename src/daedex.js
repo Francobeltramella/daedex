@@ -1,6 +1,14 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import Stats from 'stats.js';
+
+// Crear stats
+const stats = new Stats();
+stats.showPanel(0); // 0 = FPS, 1 = ms, 2 = MB
+document.body.appendChild(stats.dom);
+
+
 
 const container = document.querySelector(".element");
 
@@ -196,9 +204,12 @@ loader.load(
 
 // Animation loop
 const animate = () => {
+  stats.begin();
   requestAnimationFrame(animate);
   controls.update();
   renderer.render(scene, camera);
+
+  stats.end();
 };
 
 animate();
