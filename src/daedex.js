@@ -65,21 +65,18 @@ loader.load(
     const obj = gltf.scene;               
     scene.add(obj);
  
-function applyResponsiveScale() {
-    if (window.innerWidth < 600) {
-      obj.scale.set(0.6, 0.6, 0.6);   // mobile
-    } else if (window.innerWidth < 1024) {
-      obj.scale.set(0.8, 0.8, 0.8);   // tablet
-    } else {
-      obj.scale.set(1, 1, 1);         // desktop
+    function applyResponsiveScaleOnce() {
+      if (window.innerWidth < 600) {
+        obj.scale.set(0.6, 0.6, 0.6);
+      } else if (window.innerWidth < 1024) {
+        obj.scale.set(0.8, 0.8, 0.8);
+      } else {
+        obj.scale.set(1, 1, 1);
+      }
+      window.removeEventListener("resize", applyResponsiveScaleOnce);
     }
-  }
-  
-  // primera pasada
-  applyResponsiveScale();
-  
-  // al cambiar tamaño
-  window.addEventListener("resize", applyResponsiveScale);
+    window.addEventListener("resize", applyResponsiveScaleOnce);
+    applyResponsiveScaleOnce();
   
        // Buscar el mesh "white dentor"
        const whiteDentor = obj.getObjectByName("Plane004_2");
@@ -129,6 +126,7 @@ function applyResponsiveScale() {
           start: "top top",
           end: "center top",
           scrub: 2,          
+          invalidateOnRefresh:true,
           // markers: true,
           // pin: true,
         }
