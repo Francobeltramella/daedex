@@ -250,8 +250,14 @@ document.addEventListener("DOMContentLoaded", () => {
       resize();
       window.addEventListener("resize", resize);
   
-      // cargar GLB
-      const loader = new GLTFLoader();
+      const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/'); // Ruta CDN oficial
+// O si tenés los archivos localmente:
+// dracoLoader.setDecoderPath('/path/to/draco/');
+
+const loader = new GLTFLoader();
+loader.setDRACOLoader(dracoLoader);
+
       loader.load(url, (gltf) => {
         const objs = gltf.scene;
         scene.add(gltf.scene);
