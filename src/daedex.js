@@ -65,12 +65,21 @@ loader.load(
     const obj = gltf.scene;               
     scene.add(obj);
  
-    function applyInitialScaleOnce() {
-      const cw = container.clientWidth;
-      const s = cw < 600 ? 0.6 : cw < 1024 ? 0.8 : 1;
-      base.scale.setScalar(s);
+function applyResponsiveScale() {
+    if (window.innerWidth < 600) {
+      obj.scale.set(0.6, 0.6, 0.6);   // mobile
+    } else if (window.innerWidth < 1024) {
+      obj.scale.set(0.8, 0.8, 0.8);   // tablet
+    } else {
+      obj.scale.set(1, 1, 1);         // desktop
     }
-    applyInitialScaleOnce(); 
+  }
+  
+  // primera pasada
+  applyResponsiveScale();
+  
+  // al cambiar tamaño
+  window.addEventListener("resize", applyResponsiveScale);
   
        // Buscar el mesh "white dentor"
        const whiteDentor = obj.getObjectByName("Plane004_2");
