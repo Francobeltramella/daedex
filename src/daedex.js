@@ -60,7 +60,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 // Load GLB
 const loader = new GLTFLoader();
 loader.load(
-  "https://daedex.netlify.app/d12.glb", 
+  "https://daedex.netlify.app/m12r.glb", 
   (gltf) => {
     const obj = gltf.scene;               
     scene.add(obj);
