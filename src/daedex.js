@@ -93,7 +93,18 @@ loader.load(
         renderOnce();
       }, 120);
     }
-    window.addEventListener("resize", handleResize);
+
+    function applyResponsiveScale() {
+      const cw = container.clientWidth;
+      if (cw < 600) {
+        obj.scale.set(0.6, 0.6, 0.6);
+      } else if (cw < 1024) {
+        obj.scale.set(0.8, 0.8, 0.8);
+      } else {
+        obj.scale.set(1, 1, 1);
+      }
+    }
+    window.addEventListener("resize", applyResponsiveScale);
     window.addEventListener("orientationchange", handleResize);
   
        // Buscar el mesh "white dentor"
@@ -118,9 +129,9 @@ loader.load(
        const airDentor = obj.getObjectByName("Plane004_3");
        [grayDentor, airDentor].forEach(mesh => {
         if (mesh && mesh.isMesh) {
-            mesh.material.metalness = 0.2;
-            mesh.material.roughness = 1.5;
-            mesh.material.color.set(0xe7e7e7e);
+          mesh.material.metalness = 0.2;
+          mesh.material.roughness = 1.0;       // <= antes 1.5
+          mesh.material.color.set(0xe7e7e7);   // <= antes 0xe7e7e7e
         }
       });
     
@@ -136,7 +147,8 @@ loader.load(
       // Estado inicial equivalente al tuyo
       gsap.set(obj.position, { x: 0, y: -7 }); // estado inicial
       gsap.defaults({ overwrite: "auto" });
-  
+      ScrollTrigger.config({ ignoreMobileResize: true });
+
       // Un único timeline con ScrollTrigger
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -200,25 +212,27 @@ loader.load(
   }
 );
 
-// Responsive
-window.addEventListener("resize", () => {
-    camera.aspect = container.clientWidth / container.clientHeight;
-    camera.updateProjectionMatrix();
-  
-    renderer.setPixelRatio(
-      window.innerWidth < 600 ? 1 : Math.min(2, window.devicePixelRatio)
-    );
-    renderer.setSize(container.clientWidth, container.clientHeight);
-  });
-
-// Animation loop
-const animate = () => {
-  requestAnimationFrame(animate);
-  controls.update();
+let last = 0;
+function renderOnce() {
   renderer.render(scene, camera);
-};
+}
 
+function animate(ts = 0) {
+  requestAnimationFrame(animate);
+
+  // limitar a ~45 fps (22ms)
+  if (ts - last < 22) return;
+  last = ts;
+
+  if (controls.enabled) controls.update(); // sólo si el usuario está interactuando
+  renderOnce();
+}
 animate();
+
+// Si usás GSAP, podés engancharte al ticker para render inmediato cuando cambian timelines:
+if (window.gsap) {
+  gsap.ticker.add(renderOnce);
+}
 
 
 document.addEventListener("DOMContentLoaded", () => {
