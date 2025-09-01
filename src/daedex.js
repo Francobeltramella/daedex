@@ -19,7 +19,11 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(5, 4 , 9);
 
 // Renderer
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+
+// Capear DPR: 1 en mobile, 1.5 en desktop/tablet
+const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+renderer.setPixelRatio(isMobile ? 1 : Math.min(1.5, window.devicePixelRatio || 1));
 renderer.setSize(container.clientWidth, container.clientHeight);
 container.appendChild(renderer.domElement);
 
