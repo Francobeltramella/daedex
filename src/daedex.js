@@ -144,7 +144,7 @@ loader.load(
        [grayDentor, airDentor].forEach(mesh => {
         if (mesh && mesh.isMesh) {
             mesh.material.metalness = 0.2;
-            mesh.material.roughness = 1;
+            mesh.material.roughness = 0.7;
             mesh.material.color.set(0xe7e7e7e);
         }
       });
