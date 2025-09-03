@@ -34,7 +34,7 @@ container.appendChild(renderer.domElement);
 // Renderer ajustes recomendados
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1;
+renderer.toneMappingExposure = 0.5;
 
 // 🔑 Crear el PMREMGenerator
 const pmremGenerator = new THREE.PMREMGenerator(renderer);
@@ -72,8 +72,8 @@ scene.add(ambientLight);
 // scene.add(new THREE.GridHelper(10, 10)); // grilla 10x10
 
 // Luz puntual violeta con alcance infinito
-const dirLight = new THREE.DirectionalLight(0x7777e7, 1);
-dirLight.position.set(-2, -5, 4);
+const dirLight = new THREE.DirectionalLight(0x7777e7, 0.5);
+dirLight.position.set(-2, -5, 300);
 dirLight.target.position.set(0, 0, 0);
 scene.add(dirLight, dirLight.target);
 
