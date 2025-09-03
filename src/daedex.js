@@ -59,7 +59,7 @@ new RGBELoader()
   );
 
 // Light
-const light = new THREE.DirectionalLight(0xffffff, 6);
+const light = new THREE.DirectionalLight(0xffffff, 4);
 light.position.set(20, 20, 20);
 scene.add(light);
 
