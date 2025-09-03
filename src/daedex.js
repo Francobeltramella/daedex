@@ -198,6 +198,7 @@ loader.load(
         z: 600,
         ease: "power2.inOut"
       }, 0)
+      .to(dirLight, { intensity: 0.1 }, 0)
       // Rotación y escala (mismo inicio/duración/ease)
       .to(obj.rotation, {
         x: degToRad(70),
