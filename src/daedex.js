@@ -188,14 +188,14 @@ loader.load(
       .to(dirLight.position, {
         x: -5,
         y: 82,
-        z: 500,
+        z: 200,
         ease: "power2.inOut"
       }, 0)
 
       .to(dirLight.target.position, {
         x: 0,
         y: 0,
-        z: 600,
+        z: 300,
         ease: "power2.inOut"
       }, 0)
       .to(dirLight, { intensity: 0.3 }, 0)
@@ -208,7 +208,7 @@ loader.load(
         ease: "power3.inOut",
         overwrite: false
       }, "pose")
-      .to(light, { intensity: 0.3 }, 0)
+      .to(light, { intensity: 0.4 }, 0)
       .to(obj.scale, {
         x: 1.3, y: 1.3, z: 1.3,      // ojo: 30 es MUY grande si tu GLB ya viene grande
         duration: 0.6,
