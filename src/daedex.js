@@ -59,7 +59,7 @@ new RGBELoader()
   );
 
 // Light
-const light = new THREE.DirectionalLight(0xffffff, 4);
+const light = new THREE.DirectionalLight(0xffffff,3);
 light.position.set(20, 20, 20);
 scene.add(light);
 
@@ -144,7 +144,7 @@ loader.load(
        [grayDentor, airDentor].forEach(mesh => {
         if (mesh && mesh.isMesh) {
             mesh.material.metalness = 0.2;
-            mesh.material.roughness = 0.5;
+            mesh.material.roughness = 1;
             mesh.material.color.set(0xe7e7e7e);
         }
       });
@@ -207,7 +207,7 @@ loader.load(
         ease: "power3.inOut",
         overwrite: false
       }, "pose")
-      .to(light, { intensity: 4 }, 0)
+      .to(light, { intensity: 3 }, 0)
       .to(obj.scale, {
         x: 1.3, y: 1.3, z: 1.3,      // ojo: 30 es MUY grande si tu GLB ya viene grande
         duration: 0.6,
