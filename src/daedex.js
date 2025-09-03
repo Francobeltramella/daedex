@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 
 const container = document.querySelector(".element");
 
@@ -9,6 +10,15 @@ const container = document.querySelector(".element");
 const scene = new THREE.Scene();
 scene.background = null;
 
+
+new RGBELoader().load(
+  'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr',
+  (tex) => {
+    tex.mapping = THREE.EquirectangularReflectionMapping;
+    scene.environment = tex;   // ilumina el modelo
+    scene.background = tex;    // opcional: si no querés fondo, borrá esta línea
+  }
+);
 
 // Camera
 const camera = new THREE.PerspectiveCamera(
@@ -93,7 +103,7 @@ loader.load(
          console.log("Material antes:", whiteDentor.material);
    
          whiteDentor.material.metalness = 0.4;   // más metálico
-         whiteDentor.material.roughness = 1.0;   // más pulido
+         whiteDentor.material.roughness = 0.3;   // más pulido
          whiteDentor.material.color.set(0xffffff); // blanco puro
          whiteDentor.material.needsUpdate = true;
        }
@@ -110,7 +120,7 @@ loader.load(
        [grayDentor, airDentor].forEach(mesh => {
         if (mesh && mesh.isMesh) {
             mesh.material.metalness = 0.2;
-            mesh.material.roughness = 1.5;
+            mesh.material.roughness = 0.5;
             mesh.material.color.set(0xe7e7e7e);
         }
       });
