@@ -11,6 +11,26 @@ const container = document.querySelector(".element");
 const scene = new THREE.Scene();
 scene.background = null;
 
+
+
+
+
+// Camera
+const camera = new THREE.PerspectiveCamera(
+  45,
+  container.clientWidth / container.clientHeight,
+  0.1,
+  100
+);
+camera.position.set(5, 4 , 9);
+
+// Renderer
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(container.clientWidth, container.clientHeight);
+container.appendChild(renderer.domElement);
+
+
+
 // Renderer ajustes recomendados
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -37,22 +57,6 @@ new RGBELoader()
       pmremGenerator.dispose();
     }
   );
-
-
-
-// Camera
-const camera = new THREE.PerspectiveCamera(
-  45,
-  container.clientWidth / container.clientHeight,
-  0.1,
-  100
-);
-camera.position.set(5, 4 , 9);
-
-// Renderer
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-renderer.setSize(container.clientWidth, container.clientHeight);
-container.appendChild(renderer.domElement);
 
 // Light
 const light = new THREE.DirectionalLight(0xffffff, 6);
