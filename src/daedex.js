@@ -187,14 +187,14 @@ loader.load(
       .addLabel("pose", 0.2)
       .to(dirLight.position, {
         x: -5,
-        y: 12,
+        y: 82,
         z: 500,
         ease: "power2.inOut"
       }, 0)
 
       .to(dirLight.target.position, {
         x: 0,
-        y: 40,
+        y: 100,
         z: 600,
         ease: "power2.inOut"
       }, 0)
