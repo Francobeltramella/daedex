@@ -43,7 +43,7 @@ pmremGenerator.compileEquirectangularShader();
 new RGBELoader()
   .setDataType(THREE.FloatType) // <- clave para evitar "Unsupported type: 1009" // por compatibilidad general
   .load(
-    'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_04_1k.hdr',
+    'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/modern_buildings_1k.hdr',
     (hdr) => {
       const envMap = pmremGenerator.fromEquirectangular(hdr).texture;
 
