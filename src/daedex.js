@@ -72,7 +72,7 @@ scene.add(ambientLight);
 // scene.add(new THREE.GridHelper(10, 10)); // grilla 10x10
 
 // Luz puntual violeta con alcance infinito
-const dirLight = new THREE.DirectionalLight(0x7777e7, 0.5);
+const dirLight = new THREE.DirectionalLight(0x7777e7, 0.3);
 dirLight.position.set(-2, -5, 300);
 dirLight.target.position.set(0, 0, 0);
 scene.add(dirLight, dirLight.target);
@@ -195,7 +195,7 @@ loader.load(
       .to(dirLight.target.position, {
         x: 0,
         y: 0,
-        z: 300,
+        z: 500,
         ease: "power2.inOut"
       }, 0)
       // Rotación y escala (mismo inicio/duración/ease)
@@ -207,7 +207,7 @@ loader.load(
         ease: "power3.inOut",
         overwrite: false
       }, "pose")
-      .to(light, { intensity: 0.5 }, 0)
+      .to(light, { intensity: 0.2 }, 0)
       .to(obj.scale, {
         x: 1.3, y: 1.3, z: 1.3,      // ojo: 30 es MUY grande si tu GLB ya viene grande
         duration: 0.6,
