@@ -8,7 +8,7 @@ const container = document.querySelector(".element");
 // Scene
 const scene = new THREE.Scene();
 scene.background = null;
-const envURL = 'https://dl.polyhaven.org/file/ph-assets/HDRIs/jpg/1k/studio_small_09_1k.jpg';
+const envURL = 'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr';
 
 new THREE.TextureLoader().load(envURL, (tex) => {
   tex.mapping = THREE.EquirectangularReflectionMapping;
