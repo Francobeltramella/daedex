@@ -2,20 +2,25 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+
 
 const container = document.querySelector(".element");
 
 // Scene
 const scene = new THREE.Scene();
 scene.background = null;
-const envURL = 'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr';
 
-new THREE.TextureLoader().load(envURL, (tex) => {
-  tex.mapping = THREE.EquirectangularReflectionMapping;
-  tex.colorSpace = THREE.SRGBColorSpace; // (r152+)
-  scene.environment = tex;     // ilumina y da reflejos
-  // scene.background = tex;   // opcional: mostrás el fondo HDRI
+new RGBELoader().load('https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr', function(hdrMap) {
+  hdrMap.mapping = THREE.EquirectangularReflectionMapping;
+  scene.environment = hdrMap;
+
+   // Cleanup
+   hdrMap.dispose();
+   pmremGenerator.dispose();
 });
+
+
 
 // Camera
 const camera = new THREE.PerspectiveCamera(
