@@ -188,14 +188,14 @@ loader.load(
       .to(dirLight.position, {
         x: -5,
         y: 12,
-        z: 15,
+        z: 300,
         ease: "power2.inOut"
       }, 0)
 
       .to(dirLight.target.position, {
         x: 0,
         y: 0,
-        z: 0,
+        z: 300,
         ease: "power2.inOut"
       }, 0)
       // Rotación y escala (mismo inicio/duración/ease)
