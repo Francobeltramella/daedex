@@ -59,11 +59,11 @@ new RGBELoader()
   );
 
 // Light
-const light = new THREE.DirectionalLight(0xffffff,0.6);
-light.position.set(20, 20, 100);
+const light = new THREE.DirectionalLight(0xffffff,0.5);
+light.position.set(20, 20, 200);
 scene.add(light);
 
-const ambientLight = new THREE.AmbientLight(0x404040); // Soft light
+const ambientLight = new THREE.AmbientLight(0xffffff); // Soft light
 scene.add(ambientLight);
 
 
