@@ -8,7 +8,14 @@ const container = document.querySelector(".element");
 // Scene
 const scene = new THREE.Scene();
 scene.background = null;
+const envURL = 'https://dl.polyhaven.org/file/ph-assets/HDRIs/jpg/1k/studio_small_09_1k.jpg';
 
+new THREE.TextureLoader().load(envURL, (tex) => {
+  tex.mapping = THREE.EquirectangularReflectionMapping;
+  tex.colorSpace = THREE.SRGBColorSpace; // (r152+)
+  scene.environment = tex;     // ilumina y da reflejos
+  // scene.background = tex;   // opcional: mostrás el fondo HDRI
+});
 
 // Camera
 const camera = new THREE.PerspectiveCamera(
