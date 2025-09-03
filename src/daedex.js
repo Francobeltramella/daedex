@@ -59,8 +59,8 @@ new RGBELoader()
   );
 
 // Light
-const light = new THREE.DirectionalLight(0xffffff,0.5);
-light.position.set(20, 20, 300);
+const light = new THREE.DirectionalLight(0xffffff,0.6);
+light.position.set(20, 20, 100);
 scene.add(light);
 
 const ambientLight = new THREE.AmbientLight(0x404040); // Soft light
@@ -73,7 +73,7 @@ scene.add(ambientLight);
 
 // Luz puntual violeta con alcance infinito
 const dirLight = new THREE.DirectionalLight(0x7777e7, 0.3);
-dirLight.position.set(-2, -5, 300);
+dirLight.position.set(-2, -5, 200);
 dirLight.target.position.set(0, 0, 0);
 scene.add(dirLight, dirLight.target);
 
