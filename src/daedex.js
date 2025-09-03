@@ -10,43 +10,7 @@ const container = document.querySelector(".element");
 const scene = new THREE.Scene();
 scene.background = null;
 
-// Generador de mapas de entorno
-const pmrem = new THREE.PMREMGenerator(renderer);
-pmrem.compileEquirectangularShader();
 
-// 1) Cargar HDRI como envMap
-new RGBELoader().load(
-  'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr',
-  (hdrEquirect) => {
-    const envMap = pmrem.fromEquirectangular(hdrEquirect).texture;
-
-    scene.environment = envMap;      // Ilumina PBR
-    // scene.background = envMap;    // si querés ver el HDRI de fondo
-
-    hdrEquirect.dispose();
-    pmrem.dispose();
-
-    // 2) Ahora cargamos el GLB
-    const loader = new GLTFLoader();
-    loader.load(
-      'https://daedex.netlify.app/m12r.glb',
-      (gltf) => {
-        const obj = gltf.scene;
-        scene.add(obj);
-
-        // Asegurar que los materiales usen el envMap
-        obj.traverse((child) => {
-          if (child.isMesh && child.material && child.material.isMeshStandardMaterial) {
-            child.material.envMapIntensity = 1.5; // ajustá a gusto (1–2 es común)
-            child.material.needsUpdate = true;
-          }
-        });
-
-        // (acá metés tus animaciones, escalas, etc.)
-      }
-    );
-  }
-);
 // Camera
 const camera = new THREE.PerspectiveCamera(
   45,
