@@ -59,7 +59,7 @@ new RGBELoader()
   );
 
 // Light
-const light = new THREE.DirectionalLight(0xffffff,3);
+const light = new THREE.DirectionalLight(0xffffff,1);
 light.position.set(20, 20, 20);
 scene.add(light);
 
@@ -207,7 +207,7 @@ loader.load(
         ease: "power3.inOut",
         overwrite: false
       }, "pose")
-      .to(light, { intensity: 3 }, 0)
+      .to(light, { intensity: 1 }, 0)
       .to(obj.scale, {
         x: 1.3, y: 1.3, z: 1.3,      // ojo: 30 es MUY grande si tu GLB ya viene grande
         duration: 0.6,
