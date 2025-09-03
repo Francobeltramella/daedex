@@ -11,14 +11,32 @@ const container = document.querySelector(".element");
 const scene = new THREE.Scene();
 scene.background = null;
 
-new RGBELoader().load('https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr', function(hdrMap) {
-  hdrMap.mapping = THREE.EquirectangularReflectionMapping;
-  scene.environment = hdrMap;
+// Renderer ajustes recomendados
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1;
 
-   // Cleanup
-   hdrMap.dispose();
-   pmremGenerator.dispose();
-});
+// 🔑 Crear el PMREMGenerator
+const pmremGenerator = new THREE.PMREMGenerator(renderer);
+pmremGenerator.compileEquirectangularShader();
+
+new RGBELoader()
+  .setDataType(THREE.UnsignedByteType) // por compatibilidad general
+  .load(
+    'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_04_1k.hdr',
+    (hdr) => {
+      const envMap = pmremGenerator.fromEquirectangular(hdr).texture;
+
+      // Asignar al entorno
+      scene.environment = envMap;
+      // (Opcional) mostrar de fondo:
+      // scene.background = envMap;
+
+      // Limpieza
+      hdr.dispose();
+      pmremGenerator.dispose();
+    }
+  );
 
 
 
