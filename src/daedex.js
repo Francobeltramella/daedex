@@ -186,14 +186,14 @@ loader.load(
       // Label para sincronizar rotación y escala
       .addLabel("pose", 0.2)
       .to(dirLight.position, {
-        x: -25,
+        x: -5,
         y: 82,
         z: 500,
         ease: "power2.inOut"
       }, 0)
 
       .to(dirLight.target.position, {
-        x: 40,
+        x: 0,
         y: 100,
         z: 600,
         ease: "power2.inOut"
