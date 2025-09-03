@@ -194,7 +194,7 @@ loader.load(
 
       .to(dirLight.target.position, {
         x: 0,
-        y: 0,
+        y: 40,
         z: 600,
         ease: "power2.inOut"
       }, 0)
