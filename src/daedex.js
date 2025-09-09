@@ -63,7 +63,7 @@ const lights = (() => {
   group.add(spot, spot.target);
 
   // Ambient
-  const amb = new THREE.AmbientLight(0xffffff, 5);
+  const amb = new THREE.AmbientLight(0xffffff, 6);
   group.add(amb);
 
   // Direccional violeta
