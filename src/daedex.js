@@ -216,7 +216,7 @@ window.addEventListener('resize', onResize);
 
           mm.add("(max-width: 768px)", () => {
             // 📱 Mobile
-            gsap.set(obj.position, { x: 0, y: -4 });
+            gsap.set(obj.position, { x: 0, y: -5 });
           });
           
           mm.add("(min-width: 769px)", () => {
