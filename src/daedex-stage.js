@@ -315,6 +315,7 @@ animate();
 
 
 
+
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".element-3d-steps[data-3d-src]").forEach((container) => {
       if (container.__inited) return;
@@ -329,7 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
       // escena / cámara / renderer
       const scene  = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(65, 0, 0.1, 200);
+      const camera = new THREE.PerspectiveCamera(65, 0, 0.1, 180);
       camera.position.set(0, 0, 11);
   
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -352,82 +353,17 @@ document.addEventListener("DOMContentLoaded", () => {
       resize();
       window.addEventListener("resize", resize);
   
+      // loader con draco
       const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/'); // Ruta CDN oficial
-// O si tenés los archivos localmente:
-// dracoLoader.setDecoderPath('/path/to/draco/');
-
-const loader = new GLTFLoader();
-loader.setDRACOLoader(dracoLoader);
-
-      loader.load(url, (gltf) => {
-        const objs = gltf.scene;
-        scene.add(gltf.scene);
-        container.__glb = objs;
-        objs.rotation.y = Math.PI / -6; 
-
-
-        const wireframeMesh = objs.getObjectByName("A_Unit_Wireframe");  
-        const ObjMesh       = objs.getObjectByName("A_Unit");
-
-        if (wireframeMesh?.isMesh && ObjMesh) {
-          // Wireframe arranca invisible
-          wireframeMesh.material.transparent = true;
-          wireframeMesh.material.opacity = 0;
-        
-          // Prepara todos los materiales del ObjMesh para soportar transparencia
-          ObjMesh.traverse(child => {
-            if (child.isMesh && child.material) {
-              child.material.transparent = true;
-              child.material.opacity = 1; // arranca visible
-            }
-          });
-        
-          // Animación con timeline sincronizado
-          const tl = gsap.timeline({
-            scrollTrigger: {
-              trigger: "[section-wireframe]",
-              start: "top 40%",
-              toggleActions: "play none none reverse"
-            }
-          });
-        
-          // Wireframe entra
-          tl.to(wireframeMesh.material, {
-            opacity: 1,
-            duration: 2,
-            ease: "power2.inOut"
-          }, 0);
-        
-          // ObjMesh se desvanece
-          ObjMesh.traverse(child => {
-            if (child.isMesh && child.material) {
-              tl.to(child.material, {
-                opacity: 0,
-                duration: 2,
-                ease: "power2.inOut"
-              }, 0); // mismo tiempo, crossfade
-            }
-          });
-        }
-
-
-
-
-      });
+      dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+      const loader = new GLTFLoader();
+      loader.setDRACOLoader(dracoLoader);
   
-      // loop
-      (function animate(){
-        requestAnimationFrame(animate);
-        renderer.render(scene, camera);
-      })();
-    });
-  
-    const movements = {
+      // movimientos definidos
+      const movements = {
         glb1: [
           { rotation: [0, -6, 0], position: [0, 0, 0], duration: 1.2 },
           { rotation: [-90, 0, 0], position: [0, 0, 0], duration: 1.5 },
-     
         ],
         glb2: [
           { rotation: [0, -6, 0], position: [0, 0, 0], duration: 1.2 },
@@ -439,48 +375,105 @@ loader.setDRACOLoader(dracoLoader);
         ],
         glb4: [
           { rotation: [0, 10, 0], position: [0, 0, 0], duration: 1.2 },
-          { rotation: [0, -8, 0], position: [0, -1, 0], duration: 1.5 }
+          { rotation: [0, -8, 0], position: [0, 0, 0], duration: 1.5 }
         ]
       };
-      
-      function animateGLB(container, idx) {
-        if (!container || !container.__glb) return;
-        const obj = container.__glb;
+  
+      // cargar el modelo
+      loader.load(url, (gltf) => {
+        const objs = gltf.scene;
+        scene.add(objs);
+        container.__glb = objs;
+        objs.rotation.y = Math.PI / -6;
+  
+  // 👇 escala inicial especial para glb3
+if (container.getAttribute("id") === "glb3") {
+    objs.scale.set(0.8, 0.8, 0.8); // más chico que los demás
+  } else {
+    objs.scale.set(0.9, 0.9, 0.9); // normal
+  }
+  
+  
+        // wireframe
+        const wireframeMesh = objs.getObjectByName("A_Unit_Wireframe");  
+        const ObjMesh       = objs.getObjectByName("A_Unit");
+  
+        if (wireframeMesh?.isMesh && ObjMesh) {
+          wireframeMesh.material.transparent = true;
+          wireframeMesh.material.opacity = 0;
+        
+          ObjMesh.traverse(child => {
+            if (child.isMesh && child.material) {
+              child.material.transparent = true;
+              child.material.opacity = 1;
+            }
+          });
+        
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: "[section-wireframe]",
+              start: "top 40%",
+              toggleActions: "play none none reverse"
+            }
+          });
+        
+          tl.to(wireframeMesh.material, {
+            opacity: 1,
+            duration: 2,
+            ease: "power2.inOut"
+          }, 0);
+        
+          ObjMesh.traverse(child => {
+            if (child.isMesh && child.material) {
+              tl.to(child.material, {
+                opacity: 0,
+                duration: 2,
+                ease: "power2.inOut"
+              }, 0);
+            }
+          });
+        }
+  
+        // ✅ animación principal con scroll
         const id = container.getAttribute("id");
-        const m = movements[id]?.[idx];
-        if (!m) return;
-      
-        gsap.to(obj.rotation, {
-          x: THREE.MathUtils.degToRad(m.rotation[0]),
-          y: THREE.MathUtils.degToRad(m.rotation[1]),
-          z: THREE.MathUtils.degToRad(m.rotation[2] || 0),
-          duration: m.duration,
-          ease: "power2.out"
-        });
-      
-        gsap.to(obj.position, {
-          x: m.position[0],
-          y: m.position[1],
-          z: m.position[2] || 0,
-          duration: m.duration,
-          ease: "power2.out"
-        });
-      }
-      
-      // 🎯 ScrollTrigger reversible por sección
-      gsap.utils.toArray("[steps-section]").forEach(section => {
-        const glb = section.querySelector(".element-3d-steps");
-        if (!glb) return;
-      
-        ScrollTrigger.create({
-          trigger: section,
-          start: "top 50%",
-          end: "bottom top",
-          scrub:true,
-        //  onEnter: () => animateGLB(glb, 1),       // Scroll hacia adelante → paso 1
-         // onLeaveBack: () => animateGLB(glb, 0),   // Scrolßßßl hacia atrás → paso 0
-          markers: true,
-        });
+        const m = movements[id]?.[1]; // usamos paso 1
+        if (m) {
+          const section = container.closest("[steps-section]");
+          gsap.to(objs.rotation, {
+            x: THREE.MathUtils.degToRad(m.rotation[0]),
+            y: THREE.MathUtils.degToRad(m.rotation[1]),
+            z: THREE.MathUtils.degToRad(m.rotation[2] || 0),
+            scrollTrigger: {
+              trigger: section,
+              start: "top 20%",
+              end: "bottom 80%",
+              scrub: 1,
+              markers: true,
+            },
+            ease: "none"
+          });
+  
+          gsap.to(objs.position, {
+            x: m.position[0],
+            y: m.position[1],
+            z: m.position[2] || 0,
+            scrollTrigger: {
+              trigger: section,
+              start: "top top",
+              //end: "bottom 20%",
+              scrub: true,
+              markers: true,
+            },
+            ease: "none"
+          });
+        }
       });
-    
+  
+      // loop render
+      (function animate(){
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+      })();
+    });
   });
+  
