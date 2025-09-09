@@ -50,7 +50,7 @@ const lights = (() => {
 
   // Direccional principal
   const key = new THREE.DirectionalLight(0xffffff, 3);
-  key.position.set(20, 20, 100);
+  key.position.set(20, 10, 100);
   group.add(key);
 
   // Spot
@@ -63,7 +63,7 @@ const lights = (() => {
   group.add(spot, spot.target);
 
   // Ambient
-  const amb = new THREE.AmbientLight(0xffffff, 4);
+  const amb = new THREE.AmbientLight(0xffffff, 5);
   group.add(amb);
 
   // Direccional violeta
