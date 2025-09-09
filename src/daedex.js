@@ -4,247 +4,303 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 
+// --------------------------------------------------
+// Config general
+// --------------------------------------------------
+const container = document.querySelector('.element');
+if (!container) throw new Error('Falta el contenedor .element');
 
-const container = document.querySelector(".element");
+const ENV_URL = 'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/zawiszy_czarnego_1k.hdr';
+const GLB_URL = 'http://localhost:5173/static/elm.glb'; // cámbialo si hace falta
 
-// Scene
+// --------------------------------------------------
+// Scene / Camera / Renderer
+// --------------------------------------------------
 const scene = new THREE.Scene();
 scene.background = null;
 
-
-
-
-
-// Camera
 const camera = new THREE.PerspectiveCamera(
   45,
   container.clientWidth / container.clientHeight,
   0.1,
   100
 );
-camera.position.set(5, 4 , 9);
+camera.position.set(5, 4, 9);
 
-// Renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(container.clientWidth, container.clientHeight);
-container.appendChild(renderer.domElement);
-
-
-
-// Renderer ajustes recomendados
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.5;
+container.appendChild(renderer.domElement);
 
-// 🔑 Crear el PMREMGenerator
-const pmremGenerator = new THREE.PMREMGenerator(renderer);
-pmremGenerator.compileEquirectangularShader();
-
-new RGBELoader()
-  .setDataType(THREE.FloatType) // <- clave para evitar "Unsupported type: 1009" // por compatibilidad general
-  .load(
-    'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/zawiszy_czarnego_1k.hdr',
-    (hdr) => {
-      const envMap = pmremGenerator.fromEquirectangular(hdr).texture;
-
-      // Asignar al entorno
-      scene.environment = envMap;
-      // (Opcional) mostrar de fondo:
-      // scene.background = envMap;
-
-      // Limpieza
-      hdr.dispose();
-      pmremGenerator.dispose();
-    }
-  );
-
-// Light
-const light = new THREE.DirectionalLight(0xffffff,0.5);
-light.position.set(20, 20, 20);
-scene.add(light);
-
-const ambientLight = new THREE.AmbientLight(0xffffff); // Soft light
-scene.add(ambientLight);
-
-
-// // Axes y grid para orientarte
-// scene.add(new THREE.AxesHelper(1));      // 1 unidad = 1 metro aprox (tu escala puede variar)
-// scene.add(new THREE.GridHelper(10, 10)); // grilla 10x10
-
-// Luz puntual violeta con alcance infinito
-const dirLight = new THREE.DirectionalLight(0x7777e7, 0.3);
-dirLight.position.set(-2, -5, 200);
-dirLight.target.position.set(0, 0, 0);
-scene.add(dirLight, dirLight.target);
-
-// helper
-// const dirHelper = new THREE.DirectionalLightHelper(dirLight, 1);
-// scene.add(dirHelper);
-
-
-// (Opcional) un AxesHelper para orientarte
-//scene.add(new THREE.AxesHelper(1));
-
+// --------------------------------------------------
 // Controls
+// --------------------------------------------------
 const controls = new OrbitControls(camera, renderer.domElement);
-// 6) OrbitControls un poco más “pesado” = menos frame-churn
-//controls.enableDamping = true;
-//controls.dampingFactor = 0.08; // si tiembla, subí a 0.12
-//controls.enableDamping = true;
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
 
-// Load GLB 
+// --------------------------------------------------
+// Luces
+// --------------------------------------------------
+const lights = (() => {
+  const group = new THREE.Group();
 
-const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/'); // Ruta CDN oficial
-// O si tenés los archivos localmente:
-// dracoLoader.setDecoderPath('/path/to/draco/');
+  // Direccional principal
+  const key = new THREE.DirectionalLight(0xffffff, 3);
+  key.position.set(20, 20, 100);
+  group.add(key);
 
-const loader = new GLTFLoader();
-loader.setDRACOLoader(dracoLoader);
+  // Spot
+  const spot = new THREE.SpotLight(0xffffff, 5);
+  spot.position.set(-10, 50, -10);
+  spot.angle = Math.PI / 6;
+  spot.penumbra = 0.3;
+  spot.decay = 2;
+  spot.distance = 40;
+  group.add(spot, spot.target);
 
-loader.load(
-  "https://daedex.netlify.app/elm.glb", 
-  (gltf) => {
-    const obj = gltf.scene;               
-    scene.add(obj);
- 
-    function applyResponsiveScaleOnce() {
-      if (window.innerWidth < 600) {
-        obj.scale.set(0.6, 0.6, 0.6);
-      } else if (window.innerWidth < 1024) {
-        obj.scale.set(0.8, 0.8, 0.8);
-      } else {
-        obj.scale.set(1, 1, 1);
-      }
-      window.removeEventListener("resize", applyResponsiveScaleOnce);
-    }
-    window.addEventListener("resize", applyResponsiveScaleOnce);
-    applyResponsiveScaleOnce();
-  
-       // Buscar el mesh "white dentor"
-       const whiteDentor = obj.getObjectByName("Plane004_2");
-       if (whiteDentor && whiteDentor.isMesh) {
-         console.log("Material antes:", whiteDentor.material);
-   
-         whiteDentor.material.metalness = 0.4;   // más metálico
-         whiteDentor.material.roughness = 0.3;   // más pulido
-         whiteDentor.material.color.set(0xffffff); // blanco puro
-         whiteDentor.material.needsUpdate = true;
-       }
-       obj.traverse((child) => {
-        if (child.isMesh) {
-          console.log("Mesh:", child.name, child.material);
-        } else {
-          console.log("Node:", child.name);
+  // Ambient
+  const amb = new THREE.AmbientLight(0xffffff, 4);
+  group.add(amb);
+
+  // Direccional violeta
+  const dir = new THREE.DirectionalLight(0x7777e7, 2);
+  dir.position.set(0, 0, 0);
+  group.add(dir, dir.target);
+
+  scene.add(group);
+
+  // Helpers (descomenta si los querés ver)
+  // const keyHelper = new THREE.DirectionalLightHelper(key, 5, 0xff0000);
+  // const spotHelper = new THREE.SpotLightHelper(spot);
+  // const axes = new THREE.AxesHelper(1);
+  // const grid = new THREE.GridHelper(10, 10);
+  // scene.add(keyHelper, spotHelper, axes, grid);
+
+  return { key, spot, amb, dir /*, keyHelper, spotHelper*/ };
+})();
+
+// --------------------------------------------------
+// HDRI (promesa)
+// --------------------------------------------------
+function loadEnvMap(renderer, url) {
+  return new Promise((resolve, reject) => {
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+
+    new RGBELoader()
+      .setDataType(THREE.FloatType)
+      .load(
+        url,
+        (hdr) => {
+          const envTex = pmrem.fromEquirectangular(hdr).texture;
+          hdr.dispose();
+          pmrem.dispose();
+          resolve(envTex);
+        },
+        undefined,
+        reject
+      );
+  });
+}
+
+// --------------------------------------------------
+// Loader GLB + Draco
+// --------------------------------------------------
+function buildGLTFLoader() {
+  const dracoLoader = new DRACOLoader();
+  dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+
+  const loader = new GLTFLoader();
+  loader.setDRACOLoader(dracoLoader);
+  return loader;
+}
+
+// --------------------------------------------------
+// Utilidades
+// --------------------------------------------------
+const degToRad = (deg) => (deg * Math.PI) / 180;
+
+function centerObject(obj) {
+  const box = new THREE.Box3().setFromObject(obj);
+  const center = new THREE.Vector3();
+  box.getCenter(center);
+  obj.position.sub(center);
+}
+
+function responsiveScale(obj) {
+  if (!obj) return;
+  if (window.innerWidth < 600) obj.scale.set(0.6, 0.6, 0.6);
+  else if (window.innerWidth < 1024) obj.scale.set(0.8, 0.8, 0.8);
+  else obj.scale.set(1, 1, 1);
+}
+
+function onResize() {
+  camera.aspect = container.clientWidth / container.clientHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(container.clientWidth, container.clientHeight);
+}
+window.addEventListener('resize', onResize);
+
+// --------------------------------------------------
+// Main
+// --------------------------------------------------
+(async function init() {
+  try {
+    // 1) Cargar HDRI y asignar al entorno
+    const envMap = await loadEnvMap(renderer, ENV_URL);
+    scene.environment = envMap;
+    // Si querés de fondo:
+    // scene.background = envMap;
+
+    // 2) Cargar modelo
+    const loader = buildGLTFLoader();
+    loader.load(
+      GLB_URL,
+      (gltf) => {
+        const obj = gltf.scene;
+        scene.add(obj);
+
+        // Centrar y escalar
+        centerObject(obj);
+        responsiveScale(obj);
+
+        // Apuntar el spotlight al modelo
+        // (mover el target al centro del objeto)
+        lights.spot.target.position.copy(obj.position);
+
+        // Material tweaks
+        // Con scene.environment, los MeshStandardMaterial ya reflejan el HDRI.
+        // Si igual querés intensificar por-mesh, lo podés hacer acá:
+        obj.traverse((child) => {
+          if (child.isMesh && child.material && 'envMapIntensity' in child.material) {
+            child.material.envMapIntensity = 1.0;
+            child.material.needsUpdate = true;
+          }
+        });
+
+        // White dentor
+        const whiteDentor = obj.getObjectByName('Bake.004');
+        if (whiteDentor && whiteDentor.isMesh && whiteDentor.material) {
+          whiteDentor.material.metalness = 0.8;
+          whiteDentor.material.roughness = 0.5;
+          whiteDentor.material.color.set(0xffffff);
+          whiteDentor.material.envMapIntensity = 1.2; // refuerzo
+          whiteDentor.material.needsUpdate = true;
         }
-      });
 
-       const grayDentor = obj.getObjectByName("Plane004");
-       const airDentor = obj.getObjectByName("Plane004_3");
-       [grayDentor, airDentor].forEach(mesh => {
-        if (mesh && mesh.isMesh) {
-            mesh.material.metalness = 0.2;
+        // Otros dentor
+        const grayDentor = obj.getObjectByName('Bake_02.004');
+        const airDentor = obj.getObjectByName('Bake_03.004');
+        [grayDentor, airDentor].forEach((mesh) => {
+          if (mesh && mesh.isMesh && mesh.material) {
+            mesh.material.metalness = 0.4;
             mesh.material.roughness = 0.7;
-            mesh.material.color.set(0xe7e7e7e);
+            mesh.material.color.set(0xe7e7e7); // (corregido: era inválido)
+            mesh.material.needsUpdate = true;
+          }
+        });
+
+        // Log limpio (si querés ver jerarquía)
+        // obj.traverse((child) => {
+        //   if (child.isMesh) console.log('Mesh:', child.name, child.material);
+        //   else console.log('Node:', child.name);
+        // });
+
+        // Estado inicial
+        if (window.gsap) {
+          gsap.set(obj.position, { x: 0, y: -7 });
+          gsap.defaults({ overwrite: 'auto' });
+
+          // Timeline con ScrollTrigger (requiere gsap + ScrollTrigger ya cargados)
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: '[step-1]',
+              start: 'top top',
+              end: 'center top',
+              scrub: 2,
+              invalidateOnRefresh: true,
+              // markers: true,
+            },
+          });
+
+          tl.to(
+            obj.position,
+            {
+              keyframes: [
+                { x: 0, y: 0, duration: 0.5, ease: 'power2.out' },
+                { x: -6, y: -3, duration: 0.4, ease: 'power3.in' },
+              ],
+            },
+            0
+          )
+            .addLabel('pose', 0.2)
+            .to(
+              lights.dir.position,
+              { x: -5, y: 82, z: 200, ease: 'power2.inOut' },
+              0
+            )
+            .to(
+              lights.dir.target.position,
+              { x: 0, y: 0, z: 300, ease: 'power2.inOut' },
+              0
+            )
+            .to(lights.dir, { intensity: 0.3 }, 0)
+            .to(
+              obj.rotation,
+              {
+                x: degToRad(70),
+                y: degToRad(10),
+                z: degToRad(-30),
+                duration: 0.6,
+                ease: 'power3.inOut',
+                overwrite: false,
+              },
+              'pose'
+            )
+            .to(lights.key, { intensity: 0.4 }, 0)
+            .to(
+              obj.scale,
+              {
+                x: 1.3,
+                y: 1.3,
+                z: 1.3,
+                duration: 0.6,
+                ease: 'power3.inOut',
+                overwrite: false,
+              },
+              'pose'
+            );
         }
-      });
-    
-    // (Opcional) centrar el modelo al origen para que orbite/escale lindo
-    const box = new THREE.Box3().setFromObject(obj);
-    const center = new THREE.Vector3();
-    box.getCenter(center);
-    obj.position.sub(center);
 
-      // Helper deg->rad
-      const degToRad = (deg) => deg * Math.PI / 180;
-
-      // Estado inicial equivalente al tuyo
-      gsap.set(obj.position, { x: 0, y: -7 }); // estado inicial
-      gsap.defaults({ overwrite: "auto" });
-  
-      // Un único timeline con ScrollTrigger
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: "[step-1]",
-          start: "top top",
-          end: "center top",
-          scrub: 2,          
-          invalidateOnRefresh:true,
-          // markers: true,
-          // pin: true,
-        }
-      });
-  
-      // Posición en 2 etapas
-      tl.to(obj.position, {
-        keyframes: [
-          { x: 0,   y: 0,  duration: 0.5, ease: "power2.out" },
-          { x: -6, y: -3,  duration: 0.4, ease: "power3.in" }
-        ]
-      }, 0)
-  
-      // Label para sincronizar rotación y escala
-      .addLabel("pose", 0.2)
-      .to(dirLight.position, {
-        x: -5,
-        y: 82,
-        z: 200,
-        ease: "power2.inOut"
-      }, 0)
-
-      .to(dirLight.target.position, {
-        x: 0,
-        y: 0,
-        z: 300,
-        ease: "power2.inOut"
-      }, 0)
-      .to(dirLight, { intensity: 0.3 }, 0)
-      // Rotación y escala (mismo inicio/duración/ease)
-      .to(obj.rotation, {
-        x: degToRad(70),
-        y: degToRad(10),
-        z: degToRad(-30),
-        duration: 0.6,
-        ease: "power3.inOut",
-        overwrite: false
-      }, "pose")
-      .to(light, { intensity: 0.4 }, 0)
-      .to(obj.scale, {
-        x: 1.3, y: 1.3, z: 1.3,      // ojo: 30 es MUY grande si tu GLB ya viene grande
-        duration: 0.6,
-        ease: "power3.inOut",
-        overwrite: false
-      }, "pose");
-
-
-
-  },
-  (xhr) => {
-    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-  },
-  (error) => {
-    console.error("An error happened", error);
+        // Re-escala una sola vez post-resize (mejor UX)
+        const once = () => {
+          responsiveScale(obj);
+          window.removeEventListener('resize', once);
+        };
+        window.addEventListener('resize', once);
+      },
+      (xhr) => console.log(`${((xhr.loaded / xhr.total) * 100).toFixed(1)}% loaded`),
+      (err) => console.error('Error GLB:', err)
+    );
+  } catch (e) {
+    console.error('Error cargando HDRI:', e);
   }
-);
+})();
 
-// Responsive
-// window.addEventListener("resize", () => {
-//     camera.aspect = container.clientWidth / container.clientHeight;
-//     camera.updateProjectionMatrix();
-  
-//     renderer.setPixelRatio(
-//       window.innerWidth < 600 ? 1 : Math.min(2, window.devicePixelRatio)
-//     );
-//     renderer.setSize(container.clientWidth, container.clientHeight);
-//   });
-
-// Animation loop
-const animate = () => {
+// --------------------------------------------------
+// Loop
+// --------------------------------------------------
+function animate() {
   requestAnimationFrame(animate);
   controls.update();
+  // Si usás SpotLightHelper, actualizalo así:
+  // if (lights.spotHelper) lights.spotHelper.update();
   renderer.render(scene, camera);
-};
-
+}
 animate();
 
 
