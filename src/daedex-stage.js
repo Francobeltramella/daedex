@@ -448,7 +448,7 @@ if (container.getAttribute("id") === "glb3") {
               start: "top 20%",
               end: "bottom 80%",
               scrub: 1,
-              markers: true,
+             // markers: true,
             },
             ease: "none"
           });
@@ -462,7 +462,7 @@ if (container.getAttribute("id") === "glb3") {
               start: "top top",
               //end: "bottom 20%",
               scrub: true,
-              markers: true,
+             // markers: true,
             },
             ease: "none"
           });
