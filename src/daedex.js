@@ -11,7 +11,7 @@ const container = document.querySelector('.element');
 if (!container) throw new Error('Falta el contenedor .element');
 
 const ENV_URL = 'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/zawiszy_czarnego_1k.hdr';
-const GLB_URL = 'http://localhost:5173/static/elm.glb'; // cámbialo si hace falta
+const GLB_URL = 'https://daedex.netlify.app/elm.glb'; // cámbialo si hace falta
 
 // --------------------------------------------------
 // Scene / Camera / Renderer
