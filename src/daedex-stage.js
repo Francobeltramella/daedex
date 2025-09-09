@@ -314,6 +314,7 @@ function animate() {
 animate();
 
 
+
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".element-3d-steps[data-3d-src]").forEach((container) => {
       if (container.__inited) return;
@@ -329,7 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // escena / cámara / renderer
       const scene  = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(65, 0, 0.1, 200);
-      camera.position.set(0, -1, 15);
+      camera.position.set(0, 0, 11);
   
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       container.appendChild(renderer.domElement);
@@ -386,7 +387,7 @@ loader.setDRACOLoader(dracoLoader);
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: "[section-wireframe]",
-              start: "bottom bottom",
+              start: "top 40%",
               toggleActions: "play none none reverse"
             }
           });
@@ -423,87 +424,63 @@ loader.setDRACOLoader(dracoLoader);
     });
   
     const movements = {
-      "glb1": [
-        { rx: 0,    ry: -6,   x: 0, duration: 1.2 },  
-        { rx: -90,   ry: 0,   x: 0, z:1, duration: 1.5 },  
-        { rx: 8,   ry: -12,  x: 0, duration: 1.5 },   
-        { rx: 70,    ry: 25,   x: 0, duration: 1.4 },  
-        { rx: 0,  ry: 0,    x: 0, duration: 1.6 } 
-      ],
-      "glb2": [
-        { rx: 0,    ry: -6,   x: 0, duration: 1.2 },  
-        { rx: 10,   ry: 15,   x: 0, duration: 1.5 },  
-        { rx: 8,   ry: -12,  x: 0, duration: 1.5 },   
-        { rx: 0,    ry: 0,   x: 0, duration: 1.4 }      
-    ],
-    "glb3": [
-        { rx: 0,    ry: -6,   x: 0,  duration: 1.2 },  
-        { rx: 90,  ry: 0,   x: 0,y: -1,  duration: 1.5 },
-        { rx: 60,   ry: 25,  x: 0, duration: 1.5 },   
-        { rx: 0,    ry: 0,   x: 0, duration: 1.2 }          
-    ],
-    "glb4": [
-        { rx: 0,    ry: -6,   x: 0, duration: 1.2 },  
-        { rx: -90,  ry: 0,   x: 0,y: -1, z:1, duration: 1.5 },
-        { rx: 60,   ry: 25,  x: 0, duration: 1.5 },   
-        { rx: 0,    ry: 0,   x: 0, duration: 1.2 }      
-    ]
-    };
-  
-    function animateGLB(container, idx){
+        glb1: [
+          { rotation: [0, -6, 0], position: [0, 0, 0], duration: 1.2 },
+          { rotation: [-90, 0, 0], position: [0, 0, 0], duration: 1.5 },
+     
+        ],
+        glb2: [
+          { rotation: [0, -6, 0], position: [0, 0, 0], duration: 1.2 },
+          { rotation: [10, 15, 0], position: [0, 0, 0], duration: 1.5 }
+        ],
+        glb3: [
+          { rotation: [0, -6, 0], position: [0, 0, 0], duration: 1.2 },
+          { rotation: [90, 0, 0], position: [0, -1, 0], duration: 1.5 }
+        ],
+        glb4: [
+          { rotation: [0, 10, 0], position: [0, 0, 0], duration: 1.2 },
+          { rotation: [0, -8, 0], position: [0, -1, 0], duration: 1.5 }
+        ]
+      };
       
-      if (!container || !container.__glb) {
-        console.warn("GLB todavía no cargado para", container);
-        return;
+      function animateGLB(container, idx) {
+        if (!container || !container.__glb) return;
+        const obj = container.__glb;
+        const id = container.getAttribute("id");
+        const m = movements[id]?.[idx];
+        if (!m) return;
+      
+        gsap.to(obj.rotation, {
+          x: THREE.MathUtils.degToRad(m.rotation[0]),
+          y: THREE.MathUtils.degToRad(m.rotation[1]),
+          z: THREE.MathUtils.degToRad(m.rotation[2] || 0),
+          duration: m.duration,
+          ease: "power2.out"
+        });
+      
+        gsap.to(obj.position, {
+          x: m.position[0],
+          y: m.position[1],
+          z: m.position[2] || 0,
+          duration: m.duration,
+          ease: "power2.out"
+        });
       }
-    
-      const obj = container.__glb; 
-      if (!obj) return;
-  
-      const id = container.getAttribute("id"); // ej: "glb1"
-      const movs = movements[id] || [];
-      const m = movs[idx];
-      if (!m) return;
-  
-      gsap.to(obj.rotation, {
-        x: THREE.MathUtils.degToRad(m.rx || 0),
-        y: THREE.MathUtils.degToRad(m.ry || 0),
-        z: THREE.MathUtils.degToRad(m.rz || 0),
-        duration: m.duration || 1,
-        ease: "power2.out"
-      });
-  
-      gsap.to(obj.position, {
-        x: m.x || 0,
-        y: m.y || 0,
-        z: m.z || 0,
-        duration: m.duration || 1,
-        ease: "power2.out"
-      });
-    }
-  
-    gsap.utils.toArray("[steps-section]").forEach(section => {
-      const items = section.querySelectorAll("[item-step]");
-      const n = items.length;
-  
-      let prev = 0;
-      const tl = gsap.timeline({
-        scrollTrigger: {
+      
+      // 🎯 ScrollTrigger reversible por sección
+      gsap.utils.toArray("[steps-section]").forEach(section => {
+        const glb = section.querySelector(".element-3d-steps");
+        if (!glb) return;
+      
+        ScrollTrigger.create({
           trigger: section,
-          start: "top top",
-          end: "+=" + (n * window.innerHeight),
-          scrub: 0.5,
-          onUpdate(self){
-            const idx = Math.min(n-1, Math.floor(self.progress * n));
-            if (idx !== prev) {
-              const glb = section.querySelector(".element-3d-steps");
-              animateGLB(glb, idx); // anima según el step
-              prev = idx;
-            }
-          }
-        }
+          start: "top 50%",
+          end: "bottom top",
+          scrub:true,
+        //  onEnter: () => animateGLB(glb, 1),       // Scroll hacia adelante → paso 1
+         // onLeaveBack: () => animateGLB(glb, 0),   // Scrolßßßl hacia atrás → paso 0
+          markers: true,
+        });
       });
-      tl.to({}, { duration: n });
-    });
     
   });
