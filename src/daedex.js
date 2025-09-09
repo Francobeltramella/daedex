@@ -103,7 +103,7 @@ const loader = new GLTFLoader();
 loader.setDRACOLoader(dracoLoader);
 
 loader.load(
-  "https://daedex.netlify.app/m12r.glb", 
+  "https://daedex.netlify.app/elm.glb", 
   (gltf) => {
     const obj = gltf.scene;               
     scene.add(obj);
