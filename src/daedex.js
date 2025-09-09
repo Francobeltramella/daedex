@@ -212,7 +212,17 @@ window.addEventListener('resize', onResize);
 
         // Estado inicial
         if (window.gsap) {
-          gsap.set(obj.position, { x: 0, y: -7 });
+          let mm = gsap.matchMedia();
+
+          mm.add("(max-width: 768px)", () => {
+            // 📱 Mobile
+            gsap.set(obj.position, { x: 0, y: -4 });
+          });
+          
+          mm.add("(min-width: 769px)", () => {
+            // 💻 Desktop
+            gsap.set(obj.position, { x: 0, y: -7 });
+          });
           gsap.defaults({ overwrite: 'auto' });
 
           // Timeline con ScrollTrigger (requiere gsap + ScrollTrigger ya cargados)
