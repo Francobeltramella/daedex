@@ -395,8 +395,9 @@ if (container.getAttribute("id") === "glb3") {
   }
   
  
+  const id2 = container.getAttribute("id");
 
-  if (container.getAttribute("id") === "glb1" || container.getAttribute("id") === "glb3") {
+  if (id2 === "glb1" ) {
     // 👉 usar el primer estado definido en movements
     const objMovements = movements[id];
     if (objMovements && objMovements.length > 0) {
