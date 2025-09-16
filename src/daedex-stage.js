@@ -472,8 +472,8 @@ if (container.getAttribute("id") === "glb3") {
               trigger: section,
               start: "top 10%",
               end: "bottom 70%",
-              scrub: 0.5,
-             // markers: true,
+              scrub: 1,
+              markers: true,
             },
             ease: "none"
           });
