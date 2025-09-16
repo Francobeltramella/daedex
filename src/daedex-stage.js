@@ -470,9 +470,9 @@ if (container.getAttribute("id") === "glb3") {
             z: THREE.MathUtils.degToRad(m.rotation[2] || 0),
             scrollTrigger: {
               trigger: section,
-              start: "top 20%",
-              end: "bottom 80%",
-              scrub: 1,
+              start: "top 10%",
+              end: "bottom 70%",
+              scrub: 0.5,
              // markers: true,
             },
             ease: "none"
