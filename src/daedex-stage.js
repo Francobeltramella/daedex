@@ -362,16 +362,16 @@ document.addEventListener("DOMContentLoaded", () => {
       // movimientos definidos
       const movements = {
         glb1: [
-          { rotation: [0, -6, 0], position: [0, 0, 0], duration: 1.2 },
           { rotation: [-90, 0, 0], position: [0, 0, 0], duration: 1.5 },
+          { rotation: [0, -6, 0], position: [0, 0, 0], duration: 1.2 }
         ],
         glb2: [
           { rotation: [0, -6, 0], position: [0, 0, 0], duration: 1.2 },
           { rotation: [10, 15, 0], position: [0, 0, 0], duration: 1.5 }
         ],
         glb3: [
-          { rotation: [0, -6, 0], position: [0, 0, 0], duration: 1.2 },
-          { rotation: [90, 0, 0], position: [0, -1, 0], duration: 1.5 }
+          { rotation: [90, 0, 0], position: [0, -1, 0], duration: 1.5 },
+          { rotation: [0, -6, 0], position: [0, 0, 0], duration: 1.2 }
         ],
         glb4: [
           { rotation: [0, 10, 0], position: [0, 0, 0], duration: 1.2 },
