@@ -387,12 +387,36 @@ document.addEventListener("DOMContentLoaded", () => {
         objs.rotation.y = Math.PI / -6;
   
   // 👇 escala inicial especial para glb3
+
 if (container.getAttribute("id") === "glb3") {
     objs.scale.set(0.8, 0.8, 0.8); // más chico que los demás
   } else {
     objs.scale.set(0.9, 0.9, 0.9); // normal
   }
   
+ 
+
+  if (container.getAttribute("id") === "glb1" || container.getAttribute("id") === "glb3") {
+    // 👉 usar el primer estado definido en movements
+    const objMovements = movements[id];
+    if (objMovements && objMovements.length > 0) {
+      const initial = objMovements[0];
+
+      // rotación inicial (de grados a radianes)
+      objs.rotation.set(
+        THREE.MathUtils.degToRad(initial.rotation[0]),
+        THREE.MathUtils.degToRad(initial.rotation[1]),
+        THREE.MathUtils.degToRad(initial.rotation[2])
+      );
+
+      // posición inicial
+      objs.position.set(
+        initial.position[0],
+        initial.position[1],
+        initial.position[2]
+      );
+    }
+  }
   
         // wireframe
         const wireframeMesh = objs.getObjectByName("A_Unit_Wireframe");  
