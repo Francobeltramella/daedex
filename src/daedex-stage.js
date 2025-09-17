@@ -68,7 +68,7 @@ const lights = (() => {
 
   // Direccional violeta
   const dir = new THREE.DirectionalLight(0xe77777, 2);
-  dir.position.set(0, 0, 0);
+  dir.position.set(20, 20, 0);
   group.add(dir, dir.target);
 
   scene.add(group);
