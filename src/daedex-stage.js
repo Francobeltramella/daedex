@@ -67,7 +67,7 @@ const lights = (() => {
   group.add(amb);
 
   // Direccional violeta
-  const dir = new THREE.DirectionalLight(0x7777e7, 2);
+  const dir = new THREE.DirectionalLight(0xe77777, 2);
   dir.position.set(0, 0, 0);
   group.add(dir, dir.target);
 
