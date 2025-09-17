@@ -11,7 +11,7 @@ const container = document.querySelector('.element');
 if (!container) throw new Error('Falta el contenedor .element');
 
 const ENV_URL = 'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/zawiszy_czarnego_1k.hdr';
-const GLB_URL = 'https://daedex.netlify.app/unitred.glb'; // cámbialo si hace falta
+const GLB_URL = 'https://daedex.netlify.app/elm.glb'; // cámbialo si hace falta
 
 // --------------------------------------------------
 // Scene / Camera / Renderer
@@ -67,8 +67,8 @@ const lights = (() => {
   group.add(amb);
 
   // Direccional violeta
-  const dir = new THREE.DirectionalLight(0xe77777, 2);
-  dir.position.set(20, 20, 0);
+  const dir = new THREE.DirectionalLight(0x7777e7, 2);
+  dir.position.set(0, 0, 0);
   group.add(dir, dir.target);
 
   scene.add(group);
